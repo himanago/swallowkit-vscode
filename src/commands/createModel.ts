@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import * as path from "path";
 import { runInTerminal } from "../utils/terminal";
+import { detectPackageManager, getRunPrefix } from "../utils/packageManager";
 
 export function registerCreateModelCommand(context: vscode.ExtensionContext): void {
   const disposable = vscode.commands.registerCommand(
@@ -30,19 +31,29 @@ export function registerCreateModelCommand(context: vscode.ExtensionContext): vo
         return;
       }
 
-      const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
-      if (!workspaceFolder) {
+      // Determine workspace folder — prefer folderUri from context menu, fall back to first workspace
+      let workspaceRoot: string | undefined;
+      if (folderUri) {
+        const folder = vscode.workspace.getWorkspaceFolder(folderUri);
+        workspaceRoot = folder?.uri.fsPath;
+      }
+      if (!workspaceRoot) {
+        workspaceRoot = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+      }
+      if (!workspaceRoot) {
         vscode.window.showErrorMessage("No workspace folder open.");
         return;
       }
 
+      const pm = detectPackageManager();
+      const prefix = getRunPrefix(pm);
       const terminal = runInTerminal(
         "🐦 SwallowKit",
-        `npx swallowkit create-model ${names.join(" ")}`
+        `${prefix} swallowkit create-model ${names.join(" ")}`
       );
 
       // Watch for newly created model files and auto-open them
-      const modelsDir = path.join(workspaceFolder.uri.fsPath, "shared", "models");
+      const modelsDir = path.join(workspaceRoot, "shared", "models");
       const watcher = vscode.workspace.createFileSystemWatcher(
         new vscode.RelativePattern(modelsDir, "*.ts")
       );

@@ -27,6 +27,7 @@ export class DevServerManager {
   }
 
   show(): void {
+    this.updateStatusBar();
     this.statusBarItem.show();
   }
 

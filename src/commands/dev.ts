@@ -1,19 +1,40 @@
 import * as vscode from "vscode";
-import { getOrCreateTerminal } from "../utils/terminal";
+import { detectPackageManager, getRunPrefix } from "../utils/packageManager";
 
 const DEV_TERMINAL_NAME = "🐦 SwallowKit Dev";
+
+let devRunning = false;
 
 export function registerDevCommands(
   context: vscode.ExtensionContext,
   onStatusChange: (running: boolean) => void
 ): void {
+  const setRunning = (running: boolean) => {
+    devRunning = running;
+    onStatusChange(running);
+  };
+
   const startDisposable = vscode.commands.registerCommand(
     "swallowkit.startDev",
     () => {
-      const terminal = getOrCreateTerminal(DEV_TERMINAL_NAME);
+      // Prevent double-start
+      const existing = vscode.window.terminals.find(
+        (t) => t.name === DEV_TERMINAL_NAME
+      );
+      if (existing && devRunning) {
+        existing.show();
+        vscode.window.showInformationMessage(
+          "SwallowKit dev server is already running."
+        );
+        return;
+      }
+
+      const pm = detectPackageManager();
+      const prefix = getRunPrefix(pm);
+      const terminal = existing ?? vscode.window.createTerminal(DEV_TERMINAL_NAME);
       terminal.show();
-      terminal.sendText("npx swallowkit dev");
-      onStatusChange(true);
+      terminal.sendText(`${prefix} swallowkit dev`);
+      setRunning(true);
     }
   );
 
@@ -26,20 +47,16 @@ export function registerDevCommands(
       if (terminal) {
         terminal.dispose();
       }
-      onStatusChange(false);
+      setRunning(false);
     }
   );
 
   // Track terminal disposal to update status
   const onClose = vscode.window.onDidCloseTerminal((terminal) => {
     if (terminal.name === DEV_TERMINAL_NAME) {
-      onStatusChange(false);
+      setRunning(false);
     }
   });
 
   context.subscriptions.push(startDisposable, stopDisposable, onClose);
-}
-
-export function isDevServerRunning(): boolean {
-  return vscode.window.terminals.some((t) => t.name === DEV_TERMINAL_NAME);
 }

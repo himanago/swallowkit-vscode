@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import * as cp from "child_process";
 import { registerInitCommand } from "./commands/init";
 import { registerCreateModelCommand } from "./commands/createModel";
 import { registerScaffoldCommands } from "./commands/scaffold";
@@ -7,6 +8,7 @@ import { registerProvisionCommand } from "./commands/provision";
 import { registerOpenDocsCommand } from "./commands/openDocs";
 import { DevServerManager } from "./features/devServerManager";
 import { isSwallowKitProject } from "./features/projectDetector";
+import { detectPackageManager, getRunPrefix } from "./utils/packageManager";
 
 export async function activate(context: vscode.ExtensionContext): Promise<void> {
   // Initialize dev server manager (status bar)
@@ -44,17 +46,22 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 }
 
 function checkCliAvailability(): void {
-  const { exec } = require("child_process") as typeof import("child_process");
-  exec("npx swallowkit --version", { timeout: 10000 }, (error) => {
+  const pm = detectPackageManager();
+  const prefix = getRunPrefix(pm);
+  const cmd = pm === "pnpm" ? "pnpm dlx swallowkit --version" : "npx --yes swallowkit --version";
+  cp.exec(cmd, { timeout: 15000 }, (error) => {
     if (error) {
-      vscode.window.showWarningMessage(
-        "SwallowKit CLI not found. Run `npm install -g swallowkit` or ensure it is available via npx.",
-        "Open Documentation"
-      ).then((choice) => {
-        if (choice === "Open Documentation") {
-          vscode.commands.executeCommand("swallowkit.openDocs");
-        }
-      });
+      const installCmd = pm === "pnpm" ? "pnpm add -g swallowkit" : "npm install -g swallowkit";
+      vscode.window
+        .showWarningMessage(
+          `SwallowKit CLI が見つかりません。\`${installCmd}\` でグローバルインストールするか、${prefix} 経由で利用可能にしてください。`,
+          "Open Documentation"
+        )
+        .then((choice) => {
+          if (choice === "Open Documentation") {
+            vscode.commands.executeCommand("swallowkit.openDocs");
+          }
+        });
     }
   });
 }

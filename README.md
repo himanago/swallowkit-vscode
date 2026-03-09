@@ -1,5 +1,7 @@
 # SwallowKit VS Code Extension
 
+[日本語版 README はこちら](README.ja.md)
+
 VS Code extension for [SwallowKit](https://github.com/himanago/swallowkit) — a CLI toolkit for building full-stack Azure apps with **Next.js + Azure Functions + Cosmos DB + Zod schema sharing**.
 
 <!-- screenshots placeholder -->
@@ -12,13 +14,13 @@ Access all SwallowKit commands via `Ctrl+Shift+P`:
 
 | Command | Description |
 |---|---|
-| `SwallowKit: Initialize New Project` | Prompts for project name, runs `npx swallowkit init <name>` |
-| `SwallowKit: Create Model` | Prompts for model name(s), runs `npx swallowkit create-model`, auto-opens new files |
-| `SwallowKit: Scaffold CRUD from Model` | Pick model file → runs `npx swallowkit scaffold <path>` |
+| `SwallowKit: Initialize New Project` | Guided wizard: folder → project name → CI/CD → Cosmos DB mode → VNet, then opens the project |
+| `SwallowKit: Create Model` | Prompts for model name(s), runs `swallowkit create-model`, auto-opens new files |
+| `SwallowKit: Scaffold CRUD from Model` | Pick model file → runs `swallowkit scaffold <path>` |
 | `SwallowKit: Scaffold CRUD (API Only)` | Same as above with `--api-only` flag |
-| `SwallowKit: Start Dev Server` | Starts `npx swallowkit dev` in a dedicated terminal |
+| `SwallowKit: Start Dev Server` | Starts `swallowkit dev` in a dedicated terminal |
 | `SwallowKit: Stop Dev Server` | Stops the dev server terminal |
-| `SwallowKit: Provision Azure Resources` | Multi-step wizard → runs `npx swallowkit provision` |
+| `SwallowKit: Provision Azure Resources` | Multi-step wizard → runs `swallowkit provision` |
 | `SwallowKit: Open Documentation` | Opens https://github.com/himanago/swallowkit in browser |
 
 ### 🖱️ Context Menu Integration
@@ -48,14 +50,20 @@ Access all SwallowKit commands via `Ctrl+Shift+P`:
 
 - **Node.js** 18+
 - **SwallowKit CLI**: Available via `npx swallowkit` (or install globally: `npm install -g swallowkit`)
+- **pnpm** (recommended): If installed, the extension automatically uses `pnpm dlx` for faster execution. Falls back to `npx` when pnpm is not available.
 
 ## Usage
 
 ### Initialize a New Project
 
-1. Open an empty folder in VS Code
-2. Run `SwallowKit: Initialize New Project` from the command palette
-3. Enter your project name and follow the interactive prompts in the terminal
+1. Run `SwallowKit: Initialize New Project` from the command palette
+2. Select a target folder for the new project
+3. Enter your project name
+4. Choose CI/CD provider (GitHub Actions / Azure Pipelines / Skip)
+5. Choose Cosmos DB mode (Free Tier / Serverless)
+6. Choose network security (VNet Integration / None)
+7. Wait for initialization to complete (progress shown in notification)
+8. Choose to open the project in the current or a new window
 
 ### Create a Model
 

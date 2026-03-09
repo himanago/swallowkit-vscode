@@ -65,9 +65,19 @@
       {
         "command": "swallowkit.openDocs",
         "title": "SwallowKit: Open Documentation"
+      },
+      {
+        "command": "swallowkit.toggleDev",
+        "title": "SwallowKit: Toggle Dev Server"
       }
     ],
     "menus": {
+      "commandPalette": [
+        {
+          "command": "swallowkit.toggleDev",
+          "when": "false"
+        }
+      ],
       "explorer/context": [
         {
           "command": "swallowkit.scaffold",

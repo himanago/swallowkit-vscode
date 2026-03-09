@@ -1,0 +1,102 @@
+# SwallowKit VS Code 拡張機能
+
+[English README](README.md)
+
+[SwallowKit](https://github.com/himanago/swallowkit) 用の VS Code 拡張機能 — **Next.js + Azure Functions + Cosmos DB + Zod スキーマ共有** でフルスタック Azure アプリを構築する CLI ツールキット。
+
+<!-- screenshots placeholder -->
+
+## 機能
+
+### 🚀 コマンドパレット統合
+
+`Ctrl+Shift+P` からすべての SwallowKit コマンドにアクセスできます:
+
+| コマンド | 説明 |
+|---|---|
+| `SwallowKit: Initialize New Project` | ガイド付きウィザード: フォルダ → プロジェクト名 → CI/CD → Cosmos DB モード → VNet を選択し、プロジェクトを開く |
+| `SwallowKit: Create Model` | モデル名を入力し、`swallowkit create-model` を実行、新規ファイルを自動で開く |
+| `SwallowKit: Scaffold CRUD from Model` | モデルファイルを選択 → `swallowkit scaffold <path>` を実行 |
+| `SwallowKit: Scaffold CRUD (API Only)` | 上記と同様、`--api-only` フラグ付き |
+| `SwallowKit: Start Dev Server` | 専用ターミナルで `swallowkit dev` を開始 |
+| `SwallowKit: Stop Dev Server` | 開発サーバーのターミナルを停止 |
+| `SwallowKit: Provision Azure Resources` | マルチステップウィザード → `swallowkit provision` を実行 |
+| `SwallowKit: Open Documentation` | https://github.com/himanago/swallowkit をブラウザで開く |
+
+### 🖱️ コンテキストメニュー統合
+
+- **エクスプローラー**: `shared/models/*.ts` または `lib/models/*.ts` ファイルを右クリック → Scaffold CRUD
+- **エクスプローラー**: `shared/models/` または `lib/models/` フォルダを右クリック → Create Model
+- **エディタ**: モデルファイル編集中に右クリック → Scaffold CRUD
+
+### 📊 開発サーバー ステータスバー
+
+- **停止中**: `○ SwallowKit` — クリックで開始
+- **実行中**: `▶ SwallowKit: Running`（警告背景色）— クリックで停止
+
+### ✂️ TypeScript スニペット
+
+| プレフィックス | 説明 |
+|---|---|
+| `skmodel` | SwallowKit Zod モデルテンプレート |
+| `skfield-string` | min/max 付き String フィールド |
+| `skfield-number` | min 付き Number フィールド |
+| `skfield-boolean` | デフォルト値付き Boolean フィールド |
+| `skfield-enum` | Enum フィールド |
+| `skfield-array` | Array フィールド |
+| `sknested` | ネストされたスキーマ参照 |
+
+## 必要条件
+
+- **Node.js** 18+
+- **SwallowKit CLI**: `npx swallowkit` で利用可能（またはグローバルインストール: `npm install -g swallowkit`）
+- **pnpm**（推奨）: インストールされている場合、拡張機能は自動的に `pnpm dlx` を使用し、より高速に動作します。未インストールの場合は `npx` にフォールバックします。
+
+## 使い方
+
+### 新しいプロジェクトの初期化
+
+1. コマンドパレットから `SwallowKit: Initialize New Project` を実行
+2. プロジェクトの作成先フォルダを選択
+3. プロジェクト名を入力
+4. CI/CD プロバイダを選択（GitHub Actions / Azure Pipelines / スキップ）
+5. Cosmos DB モードを選択（Free Tier / Serverless）
+6. ネットワークセキュリティを選択（VNet 統合 / なし）
+7. 初期化の完了を待つ（通知で進捗を表示）
+8. 現在のウィンドウまたは新しいウィンドウでプロジェクトを開く
+
+### モデルの作成
+
+1. コマンドパレットから `SwallowKit: Create Model` を実行（またはモデルフォルダを右クリック）
+2. モデル名を入力（カンマ区切りで複数指定可、例: `User, Product`）
+3. ファイルが作成され、自動的にエディタで開かれます
+
+### CRUD のスキャフォールド
+
+1. コマンドパレットから `SwallowKit: Scaffold CRUD from Model` を実行
+2. QuickPick リストからモデルファイルを選択
+3. CRUD コード（Azure Functions + Next.js BFF + UI コンポーネント）が生成されます
+
+   エクスプローラーでモデルファイルを直接右クリックすることもできます。
+
+### 開発サーバー
+
+ステータスバーの `○ SwallowKit` をクリックして開発サーバーの開始/停止を切り替えます。
+ターミナル `🐦 SwallowKit Dev` が自動的に作成されます。
+
+### Azure リソースのプロビジョニング
+
+1. `SwallowKit: Provision Azure Resources` を実行
+2. リソースグループ名を入力
+3. Azure ロケーションを選択
+4. 任意でサブスクリプション ID を入力
+5. プロビジョニングコマンドがターミナルで実行されます
+
+## 拡張機能の設定
+
+このバージョンでは設定項目はありません。
+
+## リンク
+
+- [SwallowKit CLI](https://github.com/himanago/swallowkit)
+- [問題の報告](https://github.com/himanago/swallowkit-vscode/issues)
