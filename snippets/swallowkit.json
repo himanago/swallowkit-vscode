@@ -1,0 +1,63 @@
+{
+  "SwallowKit Model": {
+    "prefix": "skmodel",
+    "body": [
+      "import { z } from 'zod/v4';",
+      "",
+      "export const ${1:ModelName} = z.object({",
+      "  id: z.string(),",
+      "  name: z.string().min(1),",
+      "  createdAt: z.string().optional(),",
+      "  updatedAt: z.string().optional(),",
+      "  $2",
+      "});",
+      "",
+      "export type ${1:ModelName} = z.infer<typeof ${1:ModelName}>;",
+      "",
+      "export const displayName = '${1:ModelName}';"
+    ],
+    "description": "SwallowKit full Zod model template"
+  },
+  "SwallowKit String Field": {
+    "prefix": "skfield-string",
+    "body": [
+      "${1:fieldName}: z.string().min(${2:1}).max(${3:255}),"
+    ],
+    "description": "SwallowKit string field with min/max"
+  },
+  "SwallowKit Number Field": {
+    "prefix": "skfield-number",
+    "body": [
+      "${1:fieldName}: z.number().min(${2:0}),"
+    ],
+    "description": "SwallowKit number field with min"
+  },
+  "SwallowKit Boolean Field": {
+    "prefix": "skfield-boolean",
+    "body": [
+      "${1:fieldName}: z.boolean().default(${2:false}),"
+    ],
+    "description": "SwallowKit boolean field with default"
+  },
+  "SwallowKit Enum Field": {
+    "prefix": "skfield-enum",
+    "body": [
+      "${1:fieldName}: z.enum(['${2:value1}', '${3:value2}']),"
+    ],
+    "description": "SwallowKit enum field"
+  },
+  "SwallowKit Array Field": {
+    "prefix": "skfield-array",
+    "body": [
+      "${1:fieldName}: z.array(z.${2:string}()),"
+    ],
+    "description": "SwallowKit array field"
+  },
+  "SwallowKit Nested Schema": {
+    "prefix": "sknested",
+    "body": [
+      "${1:fieldName}: ${2:NestedSchema},"
+    ],
+    "description": "SwallowKit nested schema reference"
+  }
+}

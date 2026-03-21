@@ -1,0 +1,133 @@
+{
+  "name": "swallowkit-vscode",
+  "displayName": "SwallowKit",
+  "description": "VS Code extension for SwallowKit - Next.js + Azure Functions + Cosmos DB toolkit with Zod schema sharing",
+  "version": "0.2.0",
+  "publisher": "himanago",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other",
+    "Snippets"
+  ],
+  "keywords": [
+    "azure",
+    "next.js",
+    "azure functions",
+    "cosmos db",
+    "zod",
+    "scaffold",
+    "crud"
+  ],
+  "icon": "resources/swallowkit-icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/himanago/swallowkit-vscode"
+  },
+  "license": "MIT",
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "workspaceContains:**/shared/models/*.ts",
+    "workspaceContains:**/swallowkit.config.*",
+    "workspaceContains:**/functions/host.json"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "swallowkit.init",
+        "title": "SwallowKit: Initialize New Project"
+      },
+      {
+        "command": "swallowkit.createModel",
+        "title": "SwallowKit: Create Model"
+      },
+      {
+        "command": "swallowkit.scaffold",
+        "title": "SwallowKit: Scaffold CRUD from Model"
+      },
+      {
+        "command": "swallowkit.scaffoldApiOnly",
+        "title": "SwallowKit: Scaffold CRUD (API Only)"
+      },
+      {
+        "command": "swallowkit.startDev",
+        "title": "SwallowKit: Start Dev Server"
+      },
+      {
+        "command": "swallowkit.stopDev",
+        "title": "SwallowKit: Stop Dev Server"
+      },
+      {
+        "command": "swallowkit.provision",
+        "title": "SwallowKit: Provision Azure Resources"
+      },
+      {
+        "command": "swallowkit.openDocs",
+        "title": "SwallowKit: Open Documentation"
+      },
+      {
+        "command": "swallowkit.toggleDev",
+        "title": "SwallowKit: Toggle Dev Server"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "swallowkit.toggleDev",
+          "when": "false"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "swallowkit.scaffold",
+          "when": "resourcePath =~ /(?:shared|lib)[\\/]models[\\/].*\\.ts$/",
+          "group": "swallowkit@1"
+        },
+        {
+          "command": "swallowkit.scaffoldApiOnly",
+          "when": "resourcePath =~ /(?:shared|lib)[\\/]models[\\/].*\\.ts$/",
+          "group": "swallowkit@2"
+        },
+        {
+          "command": "swallowkit.createModel",
+          "when": "explorerResourceIsFolder && resourcePath =~ /(?:shared|lib)[\\/]models/",
+          "group": "swallowkit@1"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "swallowkit.scaffold",
+          "when": "resourcePath =~ /(?:shared|lib)[\\/]models[\\/].*\\.ts$/",
+          "group": "swallowkit@1"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "swallowkit.scaffold",
+          "when": "resourcePath =~ /(?:shared|lib)[\\/]models[\\/].*\\.ts$/",
+          "group": "navigation"
+        }
+      ]
+    },
+    "snippets": [
+      {
+        "language": "typescript",
+        "path": "./snippets/swallowkit.json"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run build",
+    "build": "node esbuild.js",
+    "watch": "node esbuild.js --watch",
+    "compile": "tsc --noEmit",
+    "lint": "eslint src --ext ts"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.85.0",
+    "esbuild": "^0.20.0",
+    "typescript": "^5.3.0"
+  }
+}
