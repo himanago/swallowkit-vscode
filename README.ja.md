@@ -14,14 +14,14 @@
 
 | コマンド | 説明 |
 |---|---|
-| `SwallowKit: Initialize New Project` | ガイド付きウィザード: フォルダ → プロジェクト名 → CI/CD → Cosmos DB モード → VNet を選択し、プロジェクトを開く |
+| `SwallowKit: Initialize New Project` | ガイド付きウィザード: フォルダ → プロジェクト名 → CI/CD → バックエンド言語 → Cosmos DB モード → VNet を選択し、プロジェクトを開く |
 | `SwallowKit: Create Model` | モデル名を入力し、`swallowkit create-model` を実行、新規ファイルを自動で開く |
 | `SwallowKit: Scaffold CRUD from Model` | モデルファイルを選択 → `swallowkit scaffold <path>` を実行 |
 | `SwallowKit: Scaffold CRUD (API Only)` | 上記と同様、`--api-only` フラグ付き |
 | `SwallowKit: Start Dev Server` | 専用ターミナルで `swallowkit dev` を開始 |
 | `SwallowKit: Stop Dev Server` | 開発サーバーのターミナルを停止 |
-| `SwallowKit: Provision Azure Resources` | マルチステップウィザード → `swallowkit provision` を実行 |
-| `SwallowKit: Open Documentation` | https://github.com/himanago/swallowkit をブラウザで開く |
+| `SwallowKit: Provision Azure Resources` | Azure 設定を入力後、CLI のリージョン選択をターミナルで進める |
+| `SwallowKit: Open Documentation` | https://himanago.github.io/swallowkit/ をブラウザで開く |
 
 ### 🖱️ コンテキストメニュー統合
 
@@ -48,7 +48,7 @@
 
 ## 必要条件
 
-- **Node.js** 18+
+- **Node.js** 22.x
 - **SwallowKit CLI**: `npx swallowkit` で利用可能（またはグローバルインストール: `npm install -g swallowkit`）
 - **pnpm**（推奨）: インストールされている場合、拡張機能は自動的に `pnpm dlx` を使用し、より高速に動作します。未インストールの場合は `npx` にフォールバックします。
 
@@ -60,10 +60,11 @@
 2. プロジェクトの作成先フォルダを選択
 3. プロジェクト名を入力
 4. CI/CD プロバイダを選択（GitHub Actions / Azure Pipelines / スキップ）
-5. Cosmos DB モードを選択（Free Tier / Serverless）
-6. ネットワークセキュリティを選択（VNet 統合 / なし）
-7. 初期化の完了を待つ（通知で進捗を表示）
-8. 現在のウィンドウまたは新しいウィンドウでプロジェクトを開く
+5. Azure Functions のバックエンド言語を選択（TypeScript / C# / Python）
+6. Cosmos DB モードを選択（Free Tier / Serverless）
+7. ネットワークセキュリティを選択（VNet 統合 / なし）
+8. 初期化の完了を待つ（通知で進捗を表示）
+9. 現在のウィンドウまたは新しいウィンドウでプロジェクトを開く
 
 ### モデルの作成
 
@@ -88,9 +89,10 @@
 
 1. `SwallowKit: Provision Azure Resources` を実行
 2. リソースグループ名を入力
-3. Azure ロケーションを選択
-4. 任意でサブスクリプション ID を入力
-5. プロビジョニングコマンドがターミナルで実行されます
+3. 任意でサブスクリプション ID を入力
+4. プロビジョニングコマンドがターミナルで実行されます
+5. ターミナルでプライマリ Azure リージョンと Static Web App のリージョンを選択します
+6. ターミナルでデプロイを確認します
 
 ## 拡張機能の設定
 
@@ -98,5 +100,6 @@
 
 ## リンク
 
+- [SwallowKit Documentation](https://himanago.github.io/swallowkit/)
 - [SwallowKit CLI](https://github.com/himanago/swallowkit)
 - [問題の報告](https://github.com/himanago/swallowkit-vscode/issues)

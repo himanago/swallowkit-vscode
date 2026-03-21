@@ -2,19 +2,19 @@
   "SwallowKit Model": {
     "prefix": "skmodel",
     "body": [
-      "import { z } from 'zod';",
+      "import { z } from 'zod/v4';",
       "",
-      "export const ${1:ModelName}Schema = z.object({",
+      "export const ${1:ModelName} = z.object({",
       "  id: z.string(),",
-      "  name: z.string().min(1).max(100),",
-      "  createdAt: z.string().datetime(),",
-      "  updatedAt: z.string().datetime(),",
+      "  name: z.string().min(1),",
+      "  createdAt: z.string().optional(),",
+      "  updatedAt: z.string().optional(),",
       "  $2",
       "});",
       "",
-      "export type ${1:ModelName} = z.infer<typeof ${1:ModelName}Schema>;",
+      "export type ${1:ModelName} = z.infer<typeof ${1:ModelName}>;",
       "",
-      "export const ${1:ModelName}DisplayName = '${1:ModelName}';"
+      "export const displayName = '${1:ModelName}';"
     ],
     "description": "SwallowKit full Zod model template"
   },

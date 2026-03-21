@@ -2,6 +2,17 @@
 
 All notable changes to the SwallowKit VS Code Extension will be documented in this file.
 
+## [0.2.0] - 2026-03-21
+
+### Changed
+- **Init wizard updated for latest SwallowKit**: Added Azure Functions backend language selection and pass all init options as flags to match the latest CLI flow reliably
+- **Provision command aligned with latest CLI**: Removed obsolete location flag handling and now guides users through interactive Azure region selection in the terminal
+- **Documentation links refreshed**: `Open Documentation` now opens the published SwallowKit documentation site
+- **Snippets refreshed**: Model snippet now matches the latest SwallowKit `create-model` template (`zod/v4`, direct schema export, `displayName`)
+
+### Documentation
+- Updated English and Japanese READMEs for the latest init/provision flows and current SwallowKit prerequisites
+
 ## [0.1.0] - 2026-02-25
 
 ### Added

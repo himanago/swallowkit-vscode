@@ -1,11 +1,12 @@
 import * as vscode from "vscode";
 import * as path from "path";
 import * as cp from "child_process";
-import { detectPackageManager, getRunPrefix } from "../utils/packageManager";
+import { detectPackageManager } from "../utils/packageManager";
 
 // ── Types matching CLI prompt choices ──────────────────────────
 
 type CiCdProvider = "github" | "azure" | "skip";
+type BackendLanguage = "typescript" | "csharp" | "python";
 type CosmosDbMode = "freetier" | "serverless";
 type VNetOption = "none" | "outbound";
 
@@ -13,6 +14,7 @@ interface InitConfig {
   targetDir: string;
   projectName: string;
   cicd: CiCdProvider;
+  backendLanguage: BackendLanguage;
   cosmosDbMode: CosmosDbMode;
   vnetOption: VNetOption;
 }
@@ -20,12 +22,6 @@ interface InitConfig {
 interface ValueQuickPickItem<T> extends vscode.QuickPickItem {
   value: T;
 }
-
-// ── Prompt‑index maps (must match CLI prompt order) ────────────
-
-const CICD_INDEX: Record<CiCdProvider, number> = { github: 0, azure: 1, skip: 2 };
-const COSMOS_INDEX: Record<CosmosDbMode, number> = { freetier: 0, serverless: 1 };
-const VNET_INDEX: Record<VNetOption, number> = { outbound: 0, none: 1 };
 
 // ── Command registration ──────────────────────────────────────
 
@@ -74,7 +70,20 @@ export function registerInitCommand(context: vscode.ExtensionContext): void {
       return;
     }
 
-    // 4. Select Cosmos DB mode
+    // 4. Select Azure Functions backend language
+    const backendLanguagePick = await vscode.window.showQuickPick<ValueQuickPickItem<BackendLanguage>>(
+      [
+        { label: "TypeScript", description: "Zod を共有して Azure Functions を TypeScript で構築", value: "typescript" },
+        { label: "C#", description: "OpenAPI ブリッジ経由で Azure Functions を C# で構築", value: "csharp" },
+        { label: "Python", description: "OpenAPI ブリッジ経由で Azure Functions を Python で構築", value: "python" },
+      ],
+      { placeHolder: "Azure Functions バックエンド言語" },
+    );
+    if (!backendLanguagePick) {
+      return;
+    }
+
+    // 5. Select Cosmos DB mode
     const cosmosDbPick = await vscode.window.showQuickPick<ValueQuickPickItem<CosmosDbMode>>(
       [
         { label: "Free Tier (1000 RU/s 無料)", description: "最初のプロジェクトに最適", value: "freetier" },
@@ -86,7 +95,7 @@ export function registerInitCommand(context: vscode.ExtensionContext): void {
       return;
     }
 
-    // 5. Select network security
+    // 6. Select network security
     const vnetPick = await vscode.window.showQuickPick<ValueQuickPickItem<VNetOption>>(
       [
         { label: "VNet 統合（推奨）", description: "Cosmos DB を Private Endpoint 経由で接続", value: "outbound" },
@@ -102,11 +111,12 @@ export function registerInitCommand(context: vscode.ExtensionContext): void {
       targetDir: folderUri[0].fsPath,
       projectName: projectName.trim(),
       cicd: cicdPick.value,
+      backendLanguage: backendLanguagePick.value,
       cosmosDbMode: cosmosDbPick.value,
       vnetOption: vnetPick.value,
     };
 
-    // 6. Run init with progress
+    // 7. Run init with progress
     let success = false;
     await vscode.window.withProgress(
       {
@@ -126,7 +136,7 @@ export function registerInitCommand(context: vscode.ExtensionContext): void {
       },
     );
 
-    // 7. Open the created project
+    // 8. Open the created project
     if (success) {
       const projectPath = path.join(config.targetDir, config.projectName);
       const openChoice = await vscode.window.showInformationMessage(
@@ -153,14 +163,6 @@ function stripAnsi(str: string): string {
   return str.replace(/\x1B\[[0-9;]*[a-zA-Z]/g, "").replace(/\x1B\][^\x07]*\x07/g, "");
 }
 
-/**
- * Generate a key sequence for a prompts `select` prompt.
- * Index 0 → just Enter (default), index N → N × ↓ then Enter.
- */
-function selectKeySequence(index: number): string {
-  return "\x1B[B".repeat(index) + "\r";
-}
-
 // ── Process runner ────────────────────────────────────────────
 
 function runInitProcess(
@@ -172,8 +174,34 @@ function runInitProcess(
     const pm = detectPackageManager();
     const args =
       pm === "pnpm"
-        ? ["dlx", "swallowkit", "init", config.projectName]
-        : ["--yes", "swallowkit", "init", config.projectName];
+        ? [
+            "dlx",
+            "swallowkit",
+            "init",
+            config.projectName,
+            "--cicd",
+            config.cicd,
+            "--backend-language",
+            config.backendLanguage,
+            "--cosmos-db-mode",
+            config.cosmosDbMode,
+            "--vnet",
+            config.vnetOption,
+          ]
+        : [
+            "--yes",
+            "swallowkit",
+            "init",
+            config.projectName,
+            "--cicd",
+            config.cicd,
+            "--backend-language",
+            config.backendLanguage,
+            "--cosmos-db-mode",
+            config.cosmosDbMode,
+            "--vnet",
+            config.vnetOption,
+          ];
     const proc = cp.spawn(pm === "pnpm" ? "pnpm" : "npx", args, {
       cwd: config.targetDir,
       shell: true,
@@ -182,15 +210,7 @@ function runInitProcess(
 
     let stdout = "";
     let stderr = "";
-    let promptsAnswered = 0;
     let resolved = false;
-
-    // Patterns for detecting each CLI prompt, and the keys to respond with
-    const promptHandlers = [
-      { pattern: "CI/CD", keys: selectKeySequence(CICD_INDEX[config.cicd]) },
-      { pattern: "Cosmos DB", keys: selectKeySequence(COSMOS_INDEX[config.cosmosDbMode]) },
-      { pattern: "Network security", keys: selectKeySequence(VNET_INDEX[config.vnetOption]) },
-    ];
 
     // Progress messages keyed off CLI output text
     const progressPatterns = [
@@ -216,17 +236,6 @@ function runInitProcess(
     proc.stdout.on("data", (data: Buffer) => {
       stdout += data.toString();
       const clean = stripAnsi(stdout);
-
-      // Answer CLI prompts by sending keystrokes via stdin
-      while (promptsAnswered < promptHandlers.length) {
-        const h = promptHandlers[promptsAnswered];
-        if (clean.includes(h.pattern)) {
-          proc.stdin.write(h.keys);
-          promptsAnswered++;
-        } else {
-          break;
-        }
-      }
 
       // Update progress notification
       for (let i = lastProgressIdx + 1; i < progressPatterns.length; i++) {

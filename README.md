@@ -14,14 +14,14 @@ Access all SwallowKit commands via `Ctrl+Shift+P`:
 
 | Command | Description |
 |---|---|
-| `SwallowKit: Initialize New Project` | Guided wizard: folder → project name → CI/CD → Cosmos DB mode → VNet, then opens the project |
+| `SwallowKit: Initialize New Project` | Guided wizard: folder → project name → CI/CD → backend language → Cosmos DB mode → VNet, then opens the project |
 | `SwallowKit: Create Model` | Prompts for model name(s), runs `swallowkit create-model`, auto-opens new files |
 | `SwallowKit: Scaffold CRUD from Model` | Pick model file → runs `swallowkit scaffold <path>` |
 | `SwallowKit: Scaffold CRUD (API Only)` | Same as above with `--api-only` flag |
 | `SwallowKit: Start Dev Server` | Starts `swallowkit dev` in a dedicated terminal |
 | `SwallowKit: Stop Dev Server` | Stops the dev server terminal |
-| `SwallowKit: Provision Azure Resources` | Multi-step wizard → runs `swallowkit provision` |
-| `SwallowKit: Open Documentation` | Opens https://github.com/himanago/swallowkit in browser |
+| `SwallowKit: Provision Azure Resources` | Collects Azure settings, then lets the CLI guide region selection in the terminal |
+| `SwallowKit: Open Documentation` | Opens https://himanago.github.io/swallowkit/ in browser |
 
 ### 🖱️ Context Menu Integration
 
@@ -48,7 +48,7 @@ Access all SwallowKit commands via `Ctrl+Shift+P`:
 
 ## Requirements
 
-- **Node.js** 18+
+- **Node.js** 22.x
 - **SwallowKit CLI**: Available via `npx swallowkit` (or install globally: `npm install -g swallowkit`)
 - **pnpm** (recommended): If installed, the extension automatically uses `pnpm dlx` for faster execution. Falls back to `npx` when pnpm is not available.
 
@@ -60,10 +60,11 @@ Access all SwallowKit commands via `Ctrl+Shift+P`:
 2. Select a target folder for the new project
 3. Enter your project name
 4. Choose CI/CD provider (GitHub Actions / Azure Pipelines / Skip)
-5. Choose Cosmos DB mode (Free Tier / Serverless)
-6. Choose network security (VNet Integration / None)
-7. Wait for initialization to complete (progress shown in notification)
-8. Choose to open the project in the current or a new window
+5. Choose backend language (TypeScript / C# / Python)
+6. Choose Cosmos DB mode (Free Tier / Serverless)
+7. Choose network security (VNet Integration / None)
+8. Wait for initialization to complete (progress shown in notification)
+9. Choose to open the project in the current or a new window
 
 ### Create a Model
 
@@ -88,9 +89,10 @@ The terminal `🐦 SwallowKit Dev` will be created automatically.
 
 1. Run `SwallowKit: Provision Azure Resources`
 2. Enter resource group name
-3. Select Azure location
-4. Optionally enter a subscription ID
-5. The provision command runs in the terminal
+3. Optionally enter a subscription ID
+4. The provision command starts in the terminal
+5. Follow the CLI prompts to choose the primary Azure location and the Static Web App location
+6. Confirm the deployment in the terminal
 
 ## Extension Settings
 
@@ -98,5 +100,6 @@ No configurable settings in this version.
 
 ## Links
 
+- [SwallowKit Documentation](https://himanago.github.io/swallowkit/)
 - [SwallowKit CLI](https://github.com/himanago/swallowkit)
 - [Report issues](https://github.com/himanago/swallowkit-vscode/issues)

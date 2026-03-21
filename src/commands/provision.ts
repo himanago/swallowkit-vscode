@@ -2,13 +2,6 @@ import * as vscode from "vscode";
 import { runInTerminal } from "../utils/terminal";
 import { detectPackageManager, getRunPrefix } from "../utils/packageManager";
 
-const LOCATION_OPTIONS = [
-  { label: "Japan East", value: "japaneast" },
-  { label: "Japan West", value: "japanwest" },
-  { label: "East US 2", value: "eastus2" },
-  { label: "West Europe", value: "westeurope" },
-];
-
 export function registerProvisionCommand(context: vscode.ExtensionContext): void {
   const disposable = vscode.commands.registerCommand(
     "swallowkit.provision",
@@ -28,30 +21,22 @@ export function registerProvisionCommand(context: vscode.ExtensionContext): void
         return;
       }
 
-      const locationItem = await vscode.window.showQuickPick(
-        LOCATION_OPTIONS.map((l) => ({ label: l.label, description: l.value })),
-        { placeHolder: "Select Azure location" }
-      );
-
-      if (!locationItem) {
-        return;
-      }
-
-      const location = locationItem.description!;
-
       const subscription = await vscode.window.showInputBox({
-        prompt: "Enter subscription ID (optional, press Enter to skip)",
+        prompt: "Enter subscription ID if you want to switch subscriptions before provisioning (optional)",
         placeHolder: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
       });
 
       const pm = detectPackageManager();
       const prefix = getRunPrefix(pm);
-      let command = `${prefix} swallowkit provision -g ${resourceGroup.trim()} -l ${location}`;
+      let command = `${prefix} swallowkit provision -g ${resourceGroup.trim()}`;
       if (subscription && subscription.trim() !== "") {
         command += ` --subscription ${subscription.trim()}`;
       }
 
       runInTerminal("🐦 SwallowKit", command);
+      void vscode.window.showInformationMessage(
+        "SwallowKit CLI will ask for the primary Azure location, the Static Web App location, and a final confirmation in the terminal.",
+      );
     }
   );
 

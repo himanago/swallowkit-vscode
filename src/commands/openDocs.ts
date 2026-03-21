@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 
-const SWALLOWKIT_DOCS_URL = "https://github.com/himanago/swallowkit";
+const SWALLOWKIT_DOCS_URL = "https://himanago.github.io/swallowkit/";
 
 export function registerOpenDocsCommand(context: vscode.ExtensionContext): void {
   const disposable = vscode.commands.registerCommand(
