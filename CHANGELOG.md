@@ -2,6 +2,11 @@
 
 All notable changes to the SwallowKit VS Code Extension will be documented in this file.
 
+## [0.2.2] - 2026-03-22
+
+### Changed
+- **Optimized extension icon asset**: Replaced `resources/logo.png` with a smaller 256x256 PNG to keep the published VSIX lightweight while preserving the official branding
+
 ## [0.2.1] - 2026-03-22
 
 ### Added
