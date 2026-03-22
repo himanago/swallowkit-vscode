@@ -2,6 +2,11 @@
 
 All notable changes to the SwallowKit VS Code Extension will be documented in this file.
 
+## [0.2.3] - 2026-03-22
+
+### Fixed
+- **Context menu path matching on Windows**: Updated the explorer/editor `when` regexes so right-click actions correctly match both `/` and `\\` path separators
+
 ## [0.2.2] - 2026-03-22
 
 ### Changed

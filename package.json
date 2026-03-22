@@ -2,7 +2,7 @@
   "name": "swallowkit-vscode",
   "displayName": "SwallowKit",
   "description": "VS Code extension for SwallowKit - Next.js + Azure Functions + Cosmos DB toolkit with Zod schema sharing",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "publisher": "himanago",
   "engines": {
     "vscode": "^1.85.0"
@@ -89,31 +89,31 @@
       "explorer/context": [
         {
           "command": "swallowkit.scaffold",
-          "when": "resourcePath =~ /(?:shared|lib)[\\/]models[\\/].*\\.ts$/",
+          "when": "resourcePath =~ /(?:shared|lib)[/\\\\]models[/\\\\].*\\.ts$/",
           "group": "swallowkit@1"
         },
         {
           "command": "swallowkit.scaffoldApiOnly",
-          "when": "resourcePath =~ /(?:shared|lib)[\\/]models[\\/].*\\.ts$/",
+          "when": "resourcePath =~ /(?:shared|lib)[/\\\\]models[/\\\\].*\\.ts$/",
           "group": "swallowkit@2"
         },
         {
           "command": "swallowkit.createModel",
-          "when": "explorerResourceIsFolder && resourcePath =~ /(?:shared|lib)[\\/]models/",
+          "when": "explorerResourceIsFolder && resourcePath =~ /(?:shared|lib)[/\\\\]models/",
           "group": "swallowkit@1"
         }
       ],
       "editor/context": [
         {
           "command": "swallowkit.scaffold",
-          "when": "resourcePath =~ /(?:shared|lib)[\\/]models[\\/].*\\.ts$/",
+          "when": "resourcePath =~ /(?:shared|lib)[/\\\\]models[/\\\\].*\\.ts$/",
           "group": "swallowkit@1"
         }
       ],
       "editor/title": [
         {
           "command": "swallowkit.scaffold",
-          "when": "resourcePath =~ /(?:shared|lib)[\\/]models[\\/].*\\.ts$/",
+          "when": "resourcePath =~ /(?:shared|lib)[/\\\\]models[/\\\\].*\\.ts$/",
           "group": "navigation"
         }
       ]
