@@ -16,9 +16,10 @@ Access all SwallowKit commands via `Ctrl+Shift+P`:
 |---|---|
 | `SwallowKit: Initialize New Project` | Guided wizard: folder → project name → CI/CD → backend language → Cosmos DB mode → VNet, then opens the project |
 | `SwallowKit: Create Model` | Prompts for model name(s), runs `swallowkit create-model`, auto-opens new files |
+| `SwallowKit: Create Dev Seed Templates` | Prompts for an environment name and runs `swallowkit create-dev-seeds <environment>` |
 | `SwallowKit: Scaffold CRUD from Model` | Pick model file → runs `swallowkit scaffold <path>` |
 | `SwallowKit: Scaffold CRUD (API Only)` | Same as above with `--api-only` flag |
-| `SwallowKit: Start Dev Server` | Starts `swallowkit dev` in a dedicated terminal |
+| `SwallowKit: Start Dev Server` | Starts `swallowkit dev` in a dedicated terminal and offers `--seed-env` when `dev-seeds/*` exists |
 | `SwallowKit: Stop Dev Server` | Stops the dev server terminal |
 | `SwallowKit: Provision Azure Resources` | Collects Azure settings, then lets the CLI guide region selection in the terminal |
 | `SwallowKit: Open Documentation` | Opens https://himanago.github.io/swallowkit/ in browser |
@@ -84,6 +85,22 @@ Access all SwallowKit commands via `Ctrl+Shift+P`:
 
 Click the `○ SwallowKit` item in the status bar to start/stop the dev server.
 The terminal `🐦 SwallowKit Dev` will be created automatically.
+
+If your project already has `dev-seeds/<environment>/` folders, the extension will offer them before startup and run `swallowkit dev --seed-env <environment>`.
+
+### Dev Seeds Workflow
+
+1. Run `SwallowKit: Create Dev Seed Templates`
+2. Enter an environment name such as `local`
+3. Edit the generated JSON files under `dev-seeds/<environment>/`
+4. Run `SwallowKit: Start Dev Server` and choose that environment to seed the Cosmos DB Emulator before startup
+
+Notes:
+
+- `shared/models/todo.ts` maps to `dev-seeds/local/todo.json`
+- Each JSON file can contain a single object or an array of objects
+- Every seed document must include a non-empty string `id`
+- If `--seed-env` is omitted, or the selected environment does not exist, current emulator data is preserved
 
 ### Provision Azure Resources
 

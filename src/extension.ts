@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import * as cp from "child_process";
 import { registerInitCommand } from "./commands/init";
 import { registerCreateModelCommand } from "./commands/createModel";
+import { registerCreateDevSeedsCommand } from "./commands/createDevSeeds";
 import { registerScaffoldCommands } from "./commands/scaffold";
 import { registerDevCommands } from "./commands/dev";
 import { registerProvisionCommand } from "./commands/provision";
@@ -17,6 +18,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   // Register all commands
   registerInitCommand(context);
   registerCreateModelCommand(context);
+  registerCreateDevSeedsCommand(context);
   registerScaffoldCommands(context);
   registerDevCommands(context, (running) => {
     devServerManager.setRunning(running);

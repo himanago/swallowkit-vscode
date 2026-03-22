@@ -16,9 +16,10 @@
 |---|---|
 | `SwallowKit: Initialize New Project` | ガイド付きウィザード: フォルダ → プロジェクト名 → CI/CD → バックエンド言語 → Cosmos DB モード → VNet を選択し、プロジェクトを開く |
 | `SwallowKit: Create Model` | モデル名を入力し、`swallowkit create-model` を実行、新規ファイルを自動で開く |
+| `SwallowKit: Create Dev Seed Templates` | 環境名を入力して `swallowkit create-dev-seeds <environment>` を実行 |
 | `SwallowKit: Scaffold CRUD from Model` | モデルファイルを選択 → `swallowkit scaffold <path>` を実行 |
 | `SwallowKit: Scaffold CRUD (API Only)` | 上記と同様、`--api-only` フラグ付き |
-| `SwallowKit: Start Dev Server` | 専用ターミナルで `swallowkit dev` を開始 |
+| `SwallowKit: Start Dev Server` | 専用ターミナルで `swallowkit dev` を開始し、`dev-seeds/*` がある場合は `--seed-env` も選択可能 |
 | `SwallowKit: Stop Dev Server` | 開発サーバーのターミナルを停止 |
 | `SwallowKit: Provision Azure Resources` | Azure 設定を入力後、CLI のリージョン選択をターミナルで進める |
 | `SwallowKit: Open Documentation` | https://himanago.github.io/swallowkit/ をブラウザで開く |
@@ -84,6 +85,22 @@
 
 ステータスバーの `○ SwallowKit` をクリックして開発サーバーの開始/停止を切り替えます。
 ターミナル `🐦 SwallowKit Dev` が自動的に作成されます。
+
+プロジェクトに `dev-seeds/<environment>/` フォルダがある場合、起動前に seed 環境を選べます。選択すると `swallowkit dev --seed-env <environment>` が実行されます。
+
+### Dev Seeds ワークフロー
+
+1. `SwallowKit: Create Dev Seed Templates` を実行
+2. `local` などの環境名を入力
+3. `dev-seeds/<environment>/` に生成された JSON を編集
+4. `SwallowKit: Start Dev Server` 実行時に同じ環境を選び、起動前に Cosmos DB Emulator へ seed を投入
+
+補足:
+
+- `shared/models/todo.ts` は `dev-seeds/local/todo.json` に対応します
+- 各 JSON ファイルは単一オブジェクトまたはオブジェクト配列を含めます
+- すべての seed ドキュメントに空でない文字列 `id` が必要です
+- `--seed-env` を付けない場合、または選んだ環境が存在しない場合は、既存のエミュレータデータが保持されます
 
 ### Azure リソースのプロビジョニング
 

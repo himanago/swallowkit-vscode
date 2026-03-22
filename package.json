@@ -25,6 +25,10 @@
     "type": "git",
     "url": "https://github.com/himanago/swallowkit-vscode"
   },
+  "homepage": "https://himanago.github.io/swallowkit/",
+  "bugs": {
+    "url": "https://github.com/himanago/swallowkit-vscode/issues"
+  },
   "license": "MIT",
   "main": "./dist/extension.js",
   "activationEvents": [
@@ -41,6 +45,10 @@
       {
         "command": "swallowkit.createModel",
         "title": "SwallowKit: Create Model"
+      },
+      {
+        "command": "swallowkit.createDevSeeds",
+        "title": "SwallowKit: Create Dev Seed Templates"
       },
       {
         "command": "swallowkit.scaffold",
