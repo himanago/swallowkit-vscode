@@ -2,6 +2,14 @@
 
 All notable changes to the SwallowKit VS Code Extension will be documented in this file.
 
+## [0.2.1] - 2026-03-22
+
+### Added
+- **Dev seeds support**: Added `Create Dev Seed Templates` and optional `--seed-env` selection when starting the dev server
+
+### Changed
+- **Official extension logo**: Switched the extension icon to `resources/logo.png`
+
 ## [0.2.0] - 2026-03-21
 
 ### Changed
