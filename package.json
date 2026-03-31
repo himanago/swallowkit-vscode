@@ -2,7 +2,7 @@
   "name": "swallowkit-vscode",
   "displayName": "SwallowKit",
   "description": "VS Code extension for SwallowKit - Next.js + Azure Functions + Cosmos DB toolkit with Zod schema sharing",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "publisher": "himanago",
   "engines": {
     "vscode": "^1.85.0"
@@ -69,6 +69,14 @@
       {
         "command": "swallowkit.provision",
         "title": "SwallowKit: Provision Azure Resources"
+      },
+      {
+        "command": "swallowkit.addConnector",
+        "title": "SwallowKit: Add Connector"
+      },
+      {
+        "command": "swallowkit.addAuth",
+        "title": "SwallowKit: Add Authentication"
       },
       {
         "command": "swallowkit.openDocs",

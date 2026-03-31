@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import * as path from "path";
 import { runInTerminal } from "../utils/terminal";
 import { detectPackageManager, getRunPrefix } from "../utils/packageManager";
+import { listConnectorNames } from "../utils/connectors";
 
 export function registerCreateModelCommand(context: vscode.ExtensionContext): void {
   const disposable = vscode.commands.registerCommand(
@@ -45,11 +46,34 @@ export function registerCreateModelCommand(context: vscode.ExtensionContext): vo
         return;
       }
 
+      // Optionally associate with a connector
+      let connectorFlag = "";
+      const connectorNames = listConnectorNames(workspaceRoot);
+      if (connectorNames.length > 0) {
+        const connectorPick = await vscode.window.showQuickPick(
+          [
+            { label: "Cosmos DB（デフォルト）", description: "コネクタなし", connectorName: "" },
+            ...connectorNames.map((name) => ({
+              label: name,
+              description: `コネクタ "${name}" に関連付ける`,
+              connectorName: name,
+            })),
+          ],
+          { placeHolder: "データソースを選択（コネクタが定義されています）" }
+        );
+        if (!connectorPick) {
+          return;
+        }
+        if (connectorPick.connectorName) {
+          connectorFlag = ` --connector ${connectorPick.connectorName}`;
+        }
+      }
+
       const pm = detectPackageManager();
       const prefix = getRunPrefix(pm);
       const terminal = runInTerminal(
         "🐦 SwallowKit",
-        `${prefix} swallowkit create-model ${names.join(" ")}`
+        `${prefix} swallowkit create-model ${names.join(" ")}${connectorFlag}`
       );
 
       // Watch for newly created model files and auto-open them

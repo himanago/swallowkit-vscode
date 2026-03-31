@@ -15,11 +15,13 @@
 | コマンド | 説明 |
 |---|---|
 | `SwallowKit: Initialize New Project` | ガイド付きウィザード: フォルダ → プロジェクト名 → CI/CD → バックエンド言語 → Cosmos DB モード → VNet を選択し、プロジェクトを開く |
-| `SwallowKit: Create Model` | モデル名を入力し、`swallowkit create-model` を実行、新規ファイルを自動で開く |
+| `SwallowKit: Create Model` | モデル名を入力し、コネクタがあれば関連付けを選択、`swallowkit create-model` を実行、新規ファイルを自動で開く |
 | `SwallowKit: Create Dev Seed Templates` | 環境名を入力して `swallowkit create-dev-seeds <environment>` を実行 |
 | `SwallowKit: Scaffold CRUD from Model` | モデルファイルを選択 → `swallowkit scaffold <path>` を実行 |
 | `SwallowKit: Scaffold CRUD (API Only)` | 上記と同様、`--api-only` フラグ付き |
-| `SwallowKit: Start Dev Server` | 専用ターミナルで `swallowkit dev` を開始し、`dev-seeds/*` がある場合は `--seed-env` も選択可能 |
+| `SwallowKit: Add Connector` | ウィザード: コネクタ名 → 種類 (RDB/API) → プロバイダー、`swallowkit add-connector` を実行 |
+| `SwallowKit: Add Authentication` | 認証プロバイダーを選択（Custom JWT / SWA / SWA+カスタム / なし）、`swallowkit add-auth` を実行 |
+| `SwallowKit: Start Dev Server` | 専用ターミナルで `swallowkit dev` を開始し、`--seed-env` および `--mock-connectors` オプションも選択可能 |
 | `SwallowKit: Stop Dev Server` | 開発サーバーのターミナルを停止 |
 | `SwallowKit: Provision Azure Resources` | Azure 設定を入力後、CLI のリージョン選択をターミナルで進める |
 | `SwallowKit: Open Documentation` | https://himanago.github.io/swallowkit/ をブラウザで開く |
@@ -46,6 +48,9 @@
 | `skfield-enum` | Enum フィールド |
 | `skfield-array` | Array フィールド |
 | `sknested` | ネストされたスキーマ参照 |
+| `skpartitionkey` | カスタム Cosmos DB パーティションキー |
+| `skconnector-rdb` | RDB コネクタ設定（MySQL, PostgreSQL, SQL Server） |
+| `skconnector-api` | REST API コネクタ設定 |
 
 ## 必要条件
 
@@ -101,6 +106,25 @@
 - 各 JSON ファイルは単一オブジェクトまたはオブジェクト配列を含めます
 - すべての seed ドキュメントに空でない文字列 `id` が必要です
 - `--seed-env` を付けない場合、または選んだ環境が存在しない場合は、既存のエミュレータデータが保持されます
+
+### 外部コネクタの追加
+
+1. コマンドパレットから `SwallowKit: Add Connector` を実行
+2. コネクタ名を入力（例: `mysql`）
+3. コネクタの種類を選択（RDB または API）
+4. RDB の場合、プロバイダーを選択（MySQL / PostgreSQL / SQL Server）
+5. `swallowkit.config.js` にコネクタが登録されます
+6. `SwallowKit: Create Model` でモデル作成時、コネクタへの関連付けが選択できます
+
+### 認証の追加
+
+1. コマンドパレットから `SwallowKit: Add Authentication` を実行
+2. 認証プロバイダーを選択（Custom JWT / Static Web Apps / SWA+カスタム / なし）
+3. プロジェクトに認証フレームワークが追加されます
+
+### モックコネクタでの開発サーバー
+
+`swallowkit.config.js` にコネクタが定義されている場合、`Start Dev Server` コマンド実行時にモックデータを使用するか（`--mock-connectors`）を選択できます。実際の外部データソースに接続せずにローカル開発が可能です。
 
 ### Azure リソースのプロビジョニング
 

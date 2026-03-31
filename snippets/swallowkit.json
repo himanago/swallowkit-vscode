@@ -59,5 +59,46 @@
       "${1:fieldName}: ${2:NestedSchema},"
     ],
     "description": "SwallowKit nested schema reference"
+  },
+  "SwallowKit Partition Key": {
+    "prefix": "skpartitionkey",
+    "body": [
+      "",
+      "// Custom Cosmos DB partition key (default: '/id')",
+      "export const partitionKey = '/${1:fieldName}';"
+    ],
+    "description": "SwallowKit custom Cosmos DB partition key export"
+  },
+  "SwallowKit RDB Connector Config": {
+    "prefix": "skconnector-rdb",
+    "body": [
+      "",
+      "// SwallowKit Connector Metadata",
+      "export const connectorConfig = {",
+      "  connector: '${1:connectorName}',",
+      "  operations: ['getAll', 'getById'] as const,",
+      "  table: '${2:tableName}',",
+      "  idColumn: '${3:id}',",
+      "};"
+    ],
+    "description": "SwallowKit RDB connector config (MySQL, PostgreSQL, SQL Server)"
+  },
+  "SwallowKit API Connector Config": {
+    "prefix": "skconnector-api",
+    "body": [
+      "",
+      "// SwallowKit Connector Metadata",
+      "export const connectorConfig = {",
+      "  connector: '${1:connectorName}',",
+      "  operations: ['getAll', 'getById', 'create', 'update'] as const,",
+      "  endpoints: {",
+      "    getAll: 'GET /${2:resources}',",
+      "    getById: 'GET /${2:resources}/{id}',",
+      "    create: 'POST /${2:resources}',",
+      "    update: 'PATCH /${2:resources}/{id}',",
+      "  },",
+      "};"
+    ],
+    "description": "SwallowKit REST API connector config"
   }
 }

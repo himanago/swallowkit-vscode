@@ -4,6 +4,7 @@ import {
   listDevSeedEnvironments,
   validateDevSeedEnvironmentName,
 } from "../utils/devSeeds";
+import { listConnectorNames } from "../utils/connectors";
 
 const DEV_TERMINAL_NAME = "🐦 SwallowKit Dev";
 
@@ -68,6 +69,42 @@ async function promptForSeedEnvironment(): Promise<string | undefined | null> {
   return selection.environment;
 }
 
+async function promptForMockConnectors(): Promise<boolean | null> {
+  const workspaceRoot = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+  if (!workspaceRoot) {
+    return false;
+  }
+
+  const connectorNames = listConnectorNames(workspaceRoot);
+  if (connectorNames.length === 0) {
+    return false;
+  }
+
+  const selection = await vscode.window.showQuickPick(
+    [
+      {
+        label: "実際のコネクタに接続",
+        description: "外部データソースに直接接続",
+        mock: false,
+      },
+      {
+        label: "モックデータを使用（推奨）",
+        description: `${connectorNames.join(", ")} をモックサーバーで代替`,
+        mock: true,
+      },
+    ],
+    {
+      placeHolder: `コネクタ (${connectorNames.join(", ")}) の動作モードを選択`,
+    }
+  );
+
+  if (!selection) {
+    return null;
+  }
+
+  return selection.mock;
+}
+
 export function registerDevCommands(
   context: vscode.ExtensionContext,
   onStatusChange: (running: boolean) => void
@@ -97,6 +134,11 @@ export function registerDevCommands(
         return;
       }
 
+      const mockConnectors = await promptForMockConnectors();
+      if (mockConnectors === null) {
+        return;
+      }
+
       const pm = detectPackageManager();
       const prefix = getRunPrefix(pm);
       const terminal = existing ?? vscode.window.createTerminal(DEV_TERMINAL_NAME);
@@ -105,6 +147,9 @@ export function registerDevCommands(
       let command = `${prefix} swallowkit dev`;
       if (seedEnvironment) {
         command += ` --seed-env ${seedEnvironment}`;
+      }
+      if (mockConnectors) {
+        command += ` --mock-connectors`;
       }
 
       terminal.sendText(command);

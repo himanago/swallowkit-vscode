@@ -15,11 +15,13 @@ Access all SwallowKit commands via `Ctrl+Shift+P`:
 | Command | Description |
 |---|---|
 | `SwallowKit: Initialize New Project` | Guided wizard: folder → project name → CI/CD → backend language → Cosmos DB mode → VNet, then opens the project |
-| `SwallowKit: Create Model` | Prompts for model name(s), runs `swallowkit create-model`, auto-opens new files |
+| `SwallowKit: Create Model` | Prompts for model name(s), optionally associates with a connector, runs `swallowkit create-model`, auto-opens new files |
 | `SwallowKit: Create Dev Seed Templates` | Prompts for an environment name and runs `swallowkit create-dev-seeds <environment>` |
 | `SwallowKit: Scaffold CRUD from Model` | Pick model file → runs `swallowkit scaffold <path>` |
 | `SwallowKit: Scaffold CRUD (API Only)` | Same as above with `--api-only` flag |
-| `SwallowKit: Start Dev Server` | Starts `swallowkit dev` in a dedicated terminal and offers `--seed-env` when `dev-seeds/*` exists |
+| `SwallowKit: Add Connector` | Wizard: connector name → type (RDB/API) → provider, runs `swallowkit add-connector` |
+| `SwallowKit: Add Authentication` | Select auth provider (Custom JWT / SWA / SWA+Custom / None), runs `swallowkit add-auth` |
+| `SwallowKit: Start Dev Server` | Starts `swallowkit dev` in a dedicated terminal, offers `--seed-env` and `--mock-connectors` options |
 | `SwallowKit: Stop Dev Server` | Stops the dev server terminal |
 | `SwallowKit: Provision Azure Resources` | Collects Azure settings, then lets the CLI guide region selection in the terminal |
 | `SwallowKit: Open Documentation` | Opens https://himanago.github.io/swallowkit/ in browser |
@@ -46,6 +48,9 @@ Access all SwallowKit commands via `Ctrl+Shift+P`:
 | `skfield-enum` | Enum field |
 | `skfield-array` | Array field |
 | `sknested` | Nested schema reference |
+| `skpartitionkey` | Custom Cosmos DB partition key |
+| `skconnector-rdb` | RDB connector config (MySQL, PostgreSQL, SQL Server) |
+| `skconnector-api` | REST API connector config |
 
 ## Requirements
 
@@ -101,6 +106,25 @@ Notes:
 - Each JSON file can contain a single object or an array of objects
 - Every seed document must include a non-empty string `id`
 - If `--seed-env` is omitted, or the selected environment does not exist, current emulator data is preserved
+
+### Add External Connectors
+
+1. Run `SwallowKit: Add Connector` from the command palette
+2. Enter a connector name (e.g. `mysql`)
+3. Select the connector type (RDB or API)
+4. If RDB, select the provider (MySQL / PostgreSQL / SQL Server)
+5. The connector is registered in `swallowkit.config.js`
+6. Create connector-aware models with `SwallowKit: Create Model` — the extension will offer to associate the model with a connector
+
+### Add Authentication
+
+1. Run `SwallowKit: Add Authentication` from the command palette
+2. Select the auth provider (Custom JWT / Static Web Apps / SWA + Custom / None)
+3. The authentication framework is added to the project
+
+### Dev Server with Mock Connectors
+
+When connectors are defined in `swallowkit.config.js`, the `Start Dev Server` command will ask whether to use mock data (`--mock-connectors`) so you can develop locally without connecting to real external data sources.
 
 ### Provision Azure Resources
 

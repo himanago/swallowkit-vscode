@@ -2,6 +2,18 @@
 
 All notable changes to the SwallowKit VS Code Extension will be documented in this file.
 
+## [0.3.0] - 2026-03-31
+
+### Added
+- **Add Connector command**: New `SwallowKit: Add Connector` command to register external data source connectors (MySQL, PostgreSQL, SQL Server, REST API) via GUI wizard
+- **Add Authentication command**: New `SwallowKit: Add Authentication` command to set up authentication providers (Custom JWT, Static Web Apps, SWA + Custom, None)
+- **Create Model with connector**: When connectors are defined in `swallowkit.config.js`, `Create Model` now offers to associate the model with a connector via `--connector` flag
+- **Dev server mock connectors**: When connectors exist, `Start Dev Server` prompts whether to use `--mock-connectors` for local development without real external data sources
+- **New snippets**: `skpartitionkey` (custom Cosmos DB partition key), `skconnector-rdb` (RDB connector config), `skconnector-api` (REST API connector config)
+
+### Changed
+- Updated to align with SwallowKit CLI v1.0.0-beta.18 features (connectors, auth, custom partition keys)
+
 ## [0.2.3] - 2026-03-22
 
 ### Fixed

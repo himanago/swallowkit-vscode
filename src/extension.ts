@@ -7,6 +7,8 @@ import { registerScaffoldCommands } from "./commands/scaffold";
 import { registerDevCommands } from "./commands/dev";
 import { registerProvisionCommand } from "./commands/provision";
 import { registerOpenDocsCommand } from "./commands/openDocs";
+import { registerAddConnectorCommand } from "./commands/addConnector";
+import { registerAddAuthCommand } from "./commands/addAuth";
 import { DevServerManager } from "./features/devServerManager";
 import { isSwallowKitProject } from "./features/projectDetector";
 import { detectPackageManager, getRunPrefix } from "./utils/packageManager";
@@ -24,6 +26,8 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     devServerManager.setRunning(running);
   });
   registerProvisionCommand(context);
+  registerAddConnectorCommand(context);
+  registerAddAuthCommand(context);
   registerOpenDocsCommand(context);
 
   // Show status bar if this is a SwallowKit project
