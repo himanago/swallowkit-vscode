@@ -1,0 +1,17 @@
+{
+  "swallowkit.init.title": "SwallowKit: 新しいプロジェクトを初期化",
+  "swallowkit.createModel.title": "SwallowKit: モデルを作成",
+  "swallowkit.createDevSeeds.title": "SwallowKit: Dev シードテンプレートを作成",
+  "swallowkit.scaffold.title": "SwallowKit: モデルから CRUD をスキャフォールド",
+  "swallowkit.scaffoldApiOnly.title": "SwallowKit: CRUD をスキャフォールド（API のみ）",
+  "swallowkit.scaffoldDryRun.title": "SwallowKit: スキャフォールドをプレビュー（Dry Run）",
+  "swallowkit.startDev.title": "SwallowKit: 開発サーバーを開始",
+  "swallowkit.stopDev.title": "SwallowKit: 開発サーバーを停止",
+  "swallowkit.provision.title": "SwallowKit: Azure リソースをプロビジョニング",
+  "swallowkit.addAuth.title": "SwallowKit: 認証を追加",
+  "swallowkit.addConnector.title": "SwallowKit: 外部コネクタを追加",
+  "swallowkit.status.title": "SwallowKit: プロジェクトの状態を表示",
+  "swallowkit.verify.title": "SwallowKit: プロジェクトを検証",
+  "swallowkit.openDocs.title": "SwallowKit: ドキュメントを開く",
+  "swallowkit.toggleDev.title": "SwallowKit: 開発サーバーを切り替え"
+}

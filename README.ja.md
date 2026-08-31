@@ -14,21 +14,24 @@
 
 | コマンド | 説明 |
 |---|---|
-| `SwallowKit: Initialize New Project` | ガイド付きウィザード: フォルダ → プロジェクト名 → CI/CD → バックエンド言語 → Cosmos DB モード → VNet を選択し、プロジェクトを開く |
-| `SwallowKit: Create Model` | モデル名を入力し、コネクタがあれば関連付けを選択、`swallowkit create-model` を実行、新規ファイルを自動で開く |
-| `SwallowKit: Create Dev Seed Templates` | 環境名を入力して `swallowkit create-dev-seeds <environment>` を実行 |
+| `SwallowKit: Initialize New Project` | ガイド付きウィザード: フォルダ → プロジェクト名 → CI/CD → バックエンド言語 → Cosmos DB モード → VNet → Static Web Apps プランを選択し、プロジェクトを開く |
+| `SwallowKit: Create Model` | モデル名を入力し、`swallowkit create-model` を実行、新規ファイルを自動で開く |
+| `SwallowKit: Create Dev Seed Templates` | モデルからシードテンプレートを生成、または `--from-emulator` でエミュレータの現在データをエクスポート |
 | `SwallowKit: Scaffold CRUD from Model` | モデルファイルを選択 → `swallowkit scaffold <path>` を実行 |
 | `SwallowKit: Scaffold CRUD (API Only)` | 上記と同様、`--api-only` フラグ付き |
-| `SwallowKit: Add Connector` | ウィザード: コネクタ名 → 種類 (RDB/API) → プロバイダー、`swallowkit add-connector` を実行 |
-| `SwallowKit: Add Authentication` | 認証プロバイダーを選択（Custom JWT / SWA / SWA+カスタム / なし）、`swallowkit add-auth` を実行 |
-| `SwallowKit: Start Dev Server` | 専用ターミナルで `swallowkit dev` を開始し、`--seed-env` および `--mock-connectors` オプションも選択可能 |
+| `SwallowKit: Scaffold Preview (Dry Run)` | ファイルを書き込まずに変更予定と競合を表示（`--dry-run`） |
+| `SwallowKit: Start Dev Server` | 専用ターミナルで `swallowkit dev` を開始。`dev-seeds/*` があれば `--seed-env`、コネクタ設定があれば `--mock-connectors` も選択可能 |
 | `SwallowKit: Stop Dev Server` | 開発サーバーのターミナルを停止 |
+| `SwallowKit: Add Authentication` | ガイド付き `swallowkit add-auth`: プロバイダー（Custom JWT / SWA / External Token / SWA + Custom / None）、任意のスキーム名と SWA identity provider |
+| `SwallowKit: Add External Connector` | ガイド付き `swallowkit add-connector`: 名前 → 種類（RDB / API）→ RDB プロバイダー（MySQL / PostgreSQL / SQL Server） |
+| `SwallowKit: Show Project Status` | `swallowkit status`（任意で `--artifacts`）で生成アーティファクトの状態とドリフトを表示 |
+| `SwallowKit: Verify Project` | `swallowkit verify` をチェック選択付き（structure / drift / typecheck）で実行 |
 | `SwallowKit: Provision Azure Resources` | Azure 設定を入力後、CLI のリージョン選択をターミナルで進める |
 | `SwallowKit: Open Documentation` | https://himanago.github.io/swallowkit/ をブラウザで開く |
 
 ### 🖱️ コンテキストメニュー統合
 
-- **エクスプローラー**: `shared/models/*.ts` または `lib/models/*.ts` ファイルを右クリック → Scaffold CRUD
+- **エクスプローラー**: `shared/models/*.ts` または `lib/models/*.ts` ファイルを右クリック → Scaffold CRUD / API Only / Dry Run
 - **エクスプローラー**: `shared/models/` または `lib/models/` フォルダを右クリック → Create Model
 - **エディタ**: モデルファイル編集中に右クリック → Scaffold CRUD
 
@@ -48,15 +51,20 @@
 | `skfield-enum` | Enum フィールド |
 | `skfield-array` | Array フィールド |
 | `sknested` | ネストされたスキーマ参照 |
-| `skpartitionkey` | カスタム Cosmos DB パーティションキー |
-| `skconnector-rdb` | RDB コネクタ設定（MySQL, PostgreSQL, SQL Server） |
+| `skpartitionkey` | Cosmos DB パーティションキー宣言 |
+| `skauthpolicy` | ロールベースアクセス制御宣言 |
+| `skconnector-rdb` | RDB コネクタ設定（MySQL / PostgreSQL / SQL Server） |
 | `skconnector-api` | REST API コネクタ設定 |
 
 ## 必要条件
 
 - **Node.js** 22.x
-- **SwallowKit CLI**: `npx swallowkit` で利用可能（またはグローバルインストール: `npm install -g swallowkit`）
+- **SwallowKit CLI**: インストール不要 — 拡張機能が `npx swallowkit` でオンデマンド実行します（推奨の利用方法）
 - **pnpm**（推奨）: インストールされている場合、拡張機能は自動的に `pnpm dlx` を使用し、より高速に動作します。未インストールの場合は `npx` にフォールバックします。
+
+## 多言語対応
+
+UI は既定で英語です。VS Code の表示言語に応じて以下の言語に切り替わります: 日本語、簡体中国語、韓国語、フランス語、ドイツ語、スペイン語、ポルトガル語（ブラジル）。
 
 ## 使い方
 
@@ -69,8 +77,9 @@
 5. Azure Functions のバックエンド言語を選択（TypeScript / C# / Python）
 6. Cosmos DB モードを選択（Free Tier / Serverless）
 7. ネットワークセキュリティを選択（VNet 統合 / なし）
-8. 初期化の完了を待つ（通知で進捗を表示）
-9. 現在のウィンドウまたは新しいウィンドウでプロジェクトを開く
+8. Static Web Apps プランを選択（Free / Standard）
+9. 初期化の完了を待つ（通知で進捗を表示）
+10. 現在のウィンドウまたは新しいウィンドウでプロジェクトを開く
 
 ### モデルの作成
 
@@ -92,13 +101,15 @@
 ターミナル `🐦 SwallowKit Dev` が自動的に作成されます。
 
 プロジェクトに `dev-seeds/<environment>/` フォルダがある場合、起動前に seed 環境を選べます。選択すると `swallowkit dev --seed-env <environment>` が実行されます。
+`swallowkit.config` にコネクタが定義されている場合は、モックコネクタサーバー（`--mock-connectors`）の起動も選択できます。
 
 ### Dev Seeds ワークフロー
 
 1. `SwallowKit: Create Dev Seed Templates` を実行
-2. `local` などの環境名を入力
-3. `dev-seeds/<environment>/` に生成された JSON を編集
-4. `SwallowKit: Start Dev Server` 実行時に同じ環境を選び、起動前に Cosmos DB Emulator へ seed を投入
+2. モデルからテンプレートを生成するか、Cosmos DB Emulator の現在データをエクスポート（`--from-emulator`）するかを選択
+3. `local` などの環境名を入力
+4. `dev-seeds/<environment>/` に生成された JSON を編集
+5. `SwallowKit: Start Dev Server` 実行時に同じ環境を選び、起動前に Cosmos DB Emulator へ seed を投入
 
 補足:
 
@@ -106,25 +117,6 @@
 - 各 JSON ファイルは単一オブジェクトまたはオブジェクト配列を含めます
 - すべての seed ドキュメントに空でない文字列 `id` が必要です
 - `--seed-env` を付けない場合、または選んだ環境が存在しない場合は、既存のエミュレータデータが保持されます
-
-### 外部コネクタの追加
-
-1. コマンドパレットから `SwallowKit: Add Connector` を実行
-2. コネクタ名を入力（例: `mysql`）
-3. コネクタの種類を選択（RDB または API）
-4. RDB の場合、プロバイダーを選択（MySQL / PostgreSQL / SQL Server）
-5. `swallowkit.config.js` にコネクタが登録されます
-6. `SwallowKit: Create Model` でモデル作成時、コネクタへの関連付けが選択できます
-
-### 認証の追加
-
-1. コマンドパレットから `SwallowKit: Add Authentication` を実行
-2. 認証プロバイダーを選択（Custom JWT / Static Web Apps / SWA+カスタム / なし）
-3. プロジェクトに認証フレームワークが追加されます
-
-### モックコネクタでの開発サーバー
-
-`swallowkit.config.js` にコネクタが定義されている場合、`Start Dev Server` コマンド実行時にモックデータを使用するか（`--mock-connectors`）を選択できます。実際の外部データソースに接続せずにローカル開発が可能です。
 
 ### Azure リソースのプロビジョニング
 
@@ -134,6 +126,24 @@
 4. プロビジョニングコマンドがターミナルで実行されます
 5. ターミナルでプライマリ Azure リージョンと Static Web App のリージョンを選択します
 6. ターミナルでデプロイを確認します
+
+### 認証の追加
+
+1. `SwallowKit: Add Authentication` を実行
+2. 認証プロバイダーを選択（Custom JWT / Static Web Apps / External Token / SWA + Custom / None）
+3. 任意でスキーム名を入力。SWA 系プロバイダーの場合は許可する identity provider も入力
+4. `swallowkit add-auth` がターミナルで実行されます
+
+### 外部コネクタの追加
+
+1. `SwallowKit: Add External Connector` を実行
+2. コネクタ名を入力し、種類（RDB / API）と RDB の場合はプロバイダーを選択
+3. `swallowkit add-connector` がターミナルで実行されます。その後 `create-model --connector <name>` でコネクタ対応モデルを作成できます
+
+### プロジェクトの健全性チェック
+
+- `SwallowKit: Show Project Status` — 生成アーティファクトの状態とドリフトを表示（`swallowkit status`）
+- `SwallowKit: Verify Project` — structure / drift / typecheck の検証を実行（`swallowkit verify`）
 
 ## 拡張機能の設定
 

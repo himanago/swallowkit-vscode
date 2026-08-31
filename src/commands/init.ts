@@ -9,6 +9,7 @@ type CiCdProvider = "github" | "azure" | "skip";
 type BackendLanguage = "typescript" | "csharp" | "python";
 type CosmosDbMode = "freetier" | "serverless";
 type VNetOption = "none" | "outbound";
+type SwaPlan = "free" | "standard";
 
 interface InitConfig {
   targetDir: string;
@@ -17,6 +18,7 @@ interface InitConfig {
   backendLanguage: BackendLanguage;
   cosmosDbMode: CosmosDbMode;
   vnetOption: VNetOption;
+  swaPlan: SwaPlan;
 }
 
 interface ValueQuickPickItem<T> extends vscode.QuickPickItem {
@@ -32,8 +34,8 @@ export function registerInitCommand(context: vscode.ExtensionContext): void {
       canSelectFiles: false,
       canSelectFolders: true,
       canSelectMany: false,
-      openLabel: "Select folder to create project in",
-      title: "SwallowKit: Select project location",
+      openLabel: vscode.l10n.t("Select folder to create project in"),
+      title: vscode.l10n.t("SwallowKit: Select project location"),
     });
     if (!folderUri || folderUri.length === 0) {
       return;
@@ -41,14 +43,14 @@ export function registerInitCommand(context: vscode.ExtensionContext): void {
 
     // 2. Enter project name
     const projectName = await vscode.window.showInputBox({
-      prompt: "Enter project name",
+      prompt: vscode.l10n.t("Enter project name"),
       placeHolder: "my-swallowkit-app",
       validateInput: (value) => {
         if (!value || value.trim() === "") {
-          return "Project name cannot be empty";
+          return vscode.l10n.t("Project name cannot be empty");
         }
         if (/[^a-zA-Z0-9-_]/.test(value.trim())) {
-          return "Project name can only contain letters, numbers, hyphens, and underscores";
+          return vscode.l10n.t("Project name can only contain letters, numbers, hyphens, and underscores");
         }
         return undefined;
       },
@@ -60,11 +62,11 @@ export function registerInitCommand(context: vscode.ExtensionContext): void {
     // 3. Select CI/CD provider
     const cicdPick = await vscode.window.showQuickPick<ValueQuickPickItem<CiCdProvider>>(
       [
-        { label: "GitHub Actions", description: "GitHub Actions でデプロイ自動化", value: "github" },
-        { label: "Azure Pipelines", description: "Azure Pipelines でデプロイ自動化", value: "azure" },
-        { label: "スキップ（手動デプロイ）", description: "CI/CD を設定しない", value: "skip" },
+        { label: "GitHub Actions", description: vscode.l10n.t("Automate deployment with GitHub Actions"), value: "github" },
+        { label: "Azure Pipelines", description: vscode.l10n.t("Automate deployment with Azure Pipelines"), value: "azure" },
+        { label: vscode.l10n.t("Skip (manual deployment)"), description: vscode.l10n.t("Do not configure CI/CD"), value: "skip" },
       ],
-      { placeHolder: "CI/CD セットアップ（デプロイ自動化を選択）" },
+      { placeHolder: vscode.l10n.t("CI/CD setup (choose deployment automation)") },
     );
     if (!cicdPick) {
       return;
@@ -73,11 +75,11 @@ export function registerInitCommand(context: vscode.ExtensionContext): void {
     // 4. Select Azure Functions backend language
     const backendLanguagePick = await vscode.window.showQuickPick<ValueQuickPickItem<BackendLanguage>>(
       [
-        { label: "TypeScript", description: "Zod を共有して Azure Functions を TypeScript で構築", value: "typescript" },
-        { label: "C#", description: "OpenAPI ブリッジ経由で Azure Functions を C# で構築", value: "csharp" },
-        { label: "Python", description: "OpenAPI ブリッジ経由で Azure Functions を Python で構築", value: "python" },
+        { label: "TypeScript", description: vscode.l10n.t("Build Azure Functions in TypeScript with shared Zod schemas"), value: "typescript" },
+        { label: "C#", description: vscode.l10n.t("Build Azure Functions in C# via the OpenAPI bridge"), value: "csharp" },
+        { label: "Python", description: vscode.l10n.t("Build Azure Functions in Python via the OpenAPI bridge"), value: "python" },
       ],
-      { placeHolder: "Azure Functions バックエンド言語" },
+      { placeHolder: vscode.l10n.t("Azure Functions backend language") },
     );
     if (!backendLanguagePick) {
       return;
@@ -86,10 +88,10 @@ export function registerInitCommand(context: vscode.ExtensionContext): void {
     // 5. Select Cosmos DB mode
     const cosmosDbPick = await vscode.window.showQuickPick<ValueQuickPickItem<CosmosDbMode>>(
       [
-        { label: "Free Tier (1000 RU/s 無料)", description: "最初のプロジェクトに最適", value: "freetier" },
-        { label: "Serverless（従量課金）", description: "柔軟な従量課金プラン", value: "serverless" },
+        { label: vscode.l10n.t("Free Tier (1000 RU/s free)"), description: vscode.l10n.t("Best for your first project"), value: "freetier" },
+        { label: vscode.l10n.t("Serverless (pay per use)"), description: vscode.l10n.t("Flexible consumption-based plan"), value: "serverless" },
       ],
-      { placeHolder: "Cosmos DB モード（コストに影響）" },
+      { placeHolder: vscode.l10n.t("Cosmos DB mode (affects cost)") },
     );
     if (!cosmosDbPick) {
       return;
@@ -98,12 +100,24 @@ export function registerInitCommand(context: vscode.ExtensionContext): void {
     // 6. Select network security
     const vnetPick = await vscode.window.showQuickPick<ValueQuickPickItem<VNetOption>>(
       [
-        { label: "VNet 統合（推奨）", description: "Cosmos DB を Private Endpoint 経由で接続", value: "outbound" },
-        { label: "なし", description: "パブリックエンドポイント（シンプルだがセキュリティは低い）", value: "none" },
+        { label: vscode.l10n.t("VNet integration (recommended)"), description: vscode.l10n.t("Connect to Cosmos DB via Private Endpoint"), value: "outbound" },
+        { label: vscode.l10n.t("None"), description: vscode.l10n.t("Public endpoint (simpler but less secure)"), value: "none" },
       ],
-      { placeHolder: "ネットワークセキュリティ" },
+      { placeHolder: vscode.l10n.t("Network security") },
     );
     if (!vnetPick) {
+      return;
+    }
+
+    // 7. Select Static Web Apps plan
+    const swaPlanPick = await vscode.window.showQuickPick<ValueQuickPickItem<SwaPlan>>(
+      [
+        { label: "Free", description: vscode.l10n.t("Free plan for personal and small projects"), value: "free" },
+        { label: "Standard", description: vscode.l10n.t("Choose when you need SLA or custom authentication"), value: "standard" },
+      ],
+      { placeHolder: vscode.l10n.t("Azure Static Web Apps plan") },
+    );
+    if (!swaPlanPick) {
       return;
     }
 
@@ -114,9 +128,10 @@ export function registerInitCommand(context: vscode.ExtensionContext): void {
       backendLanguage: backendLanguagePick.value,
       cosmosDbMode: cosmosDbPick.value,
       vnetOption: vnetPick.value,
+      swaPlan: swaPlanPick.value,
     };
 
-    // 7. Run init with progress
+    // 8. Run init with progress
     let success = false;
     await vscode.window.withProgress(
       {
@@ -126,27 +141,29 @@ export function registerInitCommand(context: vscode.ExtensionContext): void {
       },
       async (progress, token) => {
         try {
-          progress.report({ message: "プロジェクトを初期化中..." });
+          progress.report({ message: vscode.l10n.t("Initializing project...") });
           await runInitProcess(config, progress, token);
           success = true;
         } catch (error) {
           const message = error instanceof Error ? error.message : String(error);
-          vscode.window.showErrorMessage(`SwallowKit init failed:\n${message}`);
+          vscode.window.showErrorMessage(vscode.l10n.t("SwallowKit init failed:\n{0}", message));
         }
       },
     );
 
-    // 8. Open the created project
+    // 9. Open the created project
     if (success) {
       const projectPath = path.join(config.targetDir, config.projectName);
+      const openCurrentWindow = vscode.l10n.t("Open in Current Window");
+      const openNewWindow = vscode.l10n.t("Open in New Window");
       const openChoice = await vscode.window.showInformationMessage(
-        `プロジェクト "${config.projectName}" の初期化が完了しました！`,
-        "現在のウィンドウで開く",
-        "新しいウィンドウで開く",
+        vscode.l10n.t('Project "{0}" initialized successfully!', config.projectName),
+        openCurrentWindow,
+        openNewWindow,
       );
-      if (openChoice === "現在のウィンドウで開く") {
+      if (openChoice === openCurrentWindow) {
         await vscode.commands.executeCommand("vscode.openFolder", vscode.Uri.file(projectPath), false);
-      } else if (openChoice === "新しいウィンドウで開く") {
+      } else if (openChoice === openNewWindow) {
         await vscode.commands.executeCommand("vscode.openFolder", vscode.Uri.file(projectPath), true);
       }
     }
@@ -172,37 +189,28 @@ function runInitProcess(
 ): Promise<void> {
   return new Promise<void>((resolve, reject) => {
     const pm = detectPackageManager();
+    const initArgs = [
+      "init",
+      config.projectName,
+      "--cicd",
+      config.cicd,
+      "--backend-language",
+      config.backendLanguage,
+      "--cosmos-db-mode",
+      config.cosmosDbMode,
+      "--vnet",
+      config.vnetOption,
+      "--swa-plan",
+      config.swaPlan,
+    ];
     const args =
       pm === "pnpm"
-        ? [
-            "dlx",
-            "swallowkit",
-            "init",
-            config.projectName,
-            "--cicd",
-            config.cicd,
-            "--backend-language",
-            config.backendLanguage,
-            "--cosmos-db-mode",
-            config.cosmosDbMode,
-            "--vnet",
-            config.vnetOption,
-          ]
-        : [
-            "--yes",
-            "swallowkit",
-            "init",
-            config.projectName,
-            "--cicd",
-            config.cicd,
-            "--backend-language",
-            config.backendLanguage,
-            "--cosmos-db-mode",
-            config.cosmosDbMode,
-            "--vnet",
-            config.vnetOption,
-          ];
-    const proc = cp.spawn(pm === "pnpm" ? "pnpm" : "npx", args, {
+        ? ["dlx", "swallowkit", ...initArgs]
+        : ["--yes", "swallowkit", ...initArgs];
+    // All values are validated/enum literals, so joining is shell-safe.
+    // Avoids DEP0190 (args array combined with shell: true).
+    const commandLine = [pm === "pnpm" ? "pnpm" : "npx", ...args].join(" ");
+    const proc = cp.spawn(commandLine, {
       cwd: config.targetDir,
       shell: true,
       stdio: ["pipe", "pipe", "pipe"],
@@ -214,14 +222,14 @@ function runInitProcess(
 
     // Progress messages keyed off CLI output text
     const progressPatterns = [
-      { pattern: "Creating Next.js project", message: "Next.js プロジェクトを作成中..." },
-      { pattern: "Adding SwallowKit files", message: "SwallowKit ファイルを追加中..." },
-      { pattern: "Creating shared", message: "共有パッケージを作成中..." },
-      { pattern: "Creating Azure Functions", message: "Azure Functions プロジェクトを作成中..." },
-      { pattern: "Creating BFF", message: "BFF API ルートを作成中..." },
-      { pattern: "Installing", message: "依存関係をインストール中..." },
-      { pattern: "Creating infrastructure", message: "インフラストラクチャファイルを作成中..." },
-      { pattern: "Git repository", message: "Git リポジトリを初期化中..." },
+      { pattern: "Creating Next.js project", message: vscode.l10n.t("Creating Next.js project...") },
+      { pattern: "Adding SwallowKit files", message: vscode.l10n.t("Adding SwallowKit files...") },
+      { pattern: "Creating shared", message: vscode.l10n.t("Creating shared package...") },
+      { pattern: "Creating Azure Functions", message: vscode.l10n.t("Creating Azure Functions project...") },
+      { pattern: "Creating BFF", message: vscode.l10n.t("Creating BFF API routes...") },
+      { pattern: "Installing", message: vscode.l10n.t("Installing dependencies...") },
+      { pattern: "Creating infrastructure", message: vscode.l10n.t("Creating infrastructure files...") },
+      { pattern: "Git repository", message: vscode.l10n.t("Initializing Git repository...") },
     ];
     let lastProgressIdx = -1;
 
@@ -229,7 +237,7 @@ function runInitProcess(
       if (!resolved) {
         resolved = true;
         proc.kill();
-        reject(new Error("Cancelled by user."));
+        reject(new Error(vscode.l10n.t("Cancelled by user.")));
       }
     });
 

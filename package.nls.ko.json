@@ -1,0 +1,17 @@
+{
+  "swallowkit.init.title": "SwallowKit: 새 프로젝트 초기화",
+  "swallowkit.createModel.title": "SwallowKit: 모델 만들기",
+  "swallowkit.createDevSeeds.title": "SwallowKit: 개발 시드 템플릿 만들기",
+  "swallowkit.scaffold.title": "SwallowKit: 모델에서 CRUD 스캐폴드",
+  "swallowkit.scaffoldApiOnly.title": "SwallowKit: CRUD 스캐폴드 (API 전용)",
+  "swallowkit.scaffoldDryRun.title": "SwallowKit: 스캐폴드 미리 보기 (Dry Run)",
+  "swallowkit.startDev.title": "SwallowKit: 개발 서버 시작",
+  "swallowkit.stopDev.title": "SwallowKit: 개발 서버 중지",
+  "swallowkit.provision.title": "SwallowKit: Azure 리소스 프로비저닝",
+  "swallowkit.addAuth.title": "SwallowKit: 인증 추가",
+  "swallowkit.addConnector.title": "SwallowKit: 외부 커넥터 추가",
+  "swallowkit.status.title": "SwallowKit: 프로젝트 상태 표시",
+  "swallowkit.verify.title": "SwallowKit: 프로젝트 검증",
+  "swallowkit.openDocs.title": "SwallowKit: 설명서 열기",
+  "swallowkit.toggleDev.title": "SwallowKit: 개발 서버 전환"
+}

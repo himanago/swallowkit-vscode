@@ -1,5 +1,6 @@
 import * as fs from "fs";
 import * as path from "path";
+import * as vscode from "vscode";
 
 export const DEV_SEEDS_DIR_NAME = "dev-seeds";
 
@@ -8,11 +9,11 @@ const DEV_SEED_ENVIRONMENT_PATTERN = /^[A-Za-z0-9_-]+$/;
 export function validateDevSeedEnvironmentName(value: string): string | undefined {
   const trimmed = value.trim();
   if (trimmed.length === 0) {
-    return "Environment name cannot be empty";
+    return vscode.l10n.t("Environment name cannot be empty");
   }
 
   if (!DEV_SEED_ENVIRONMENT_PATTERN.test(trimmed)) {
-    return "Environment name can only contain letters, numbers, hyphens, and underscores";
+    return vscode.l10n.t("Environment name can only contain letters, numbers, hyphens, and underscores");
   }
 
   return undefined;

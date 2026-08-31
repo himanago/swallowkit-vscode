@@ -43,13 +43,13 @@ export class DevServerManager {
   private updateStatusBar(): void {
     if (this.running) {
       this.statusBarItem.text = "$(play-circle) SwallowKit: Running";
-      this.statusBarItem.tooltip = "Click to stop dev server";
+      this.statusBarItem.tooltip = vscode.l10n.t("Click to stop dev server");
       this.statusBarItem.backgroundColor = new vscode.ThemeColor(
         "statusBarItem.warningBackground"
       );
     } else {
       this.statusBarItem.text = "$(circle-outline) SwallowKit";
-      this.statusBarItem.tooltip = "Click to start dev server";
+      this.statusBarItem.tooltip = vscode.l10n.t("Click to start dev server");
       this.statusBarItem.backgroundColor = undefined;
     }
   }

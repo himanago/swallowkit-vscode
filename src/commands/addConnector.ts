@@ -1,87 +1,73 @@
 import * as vscode from "vscode";
-import { runInTerminal } from "../utils/terminal";
 import { detectPackageManager, getRunPrefix } from "../utils/packageManager";
-
-interface ValueQuickPickItem<T> extends vscode.QuickPickItem {
-  value: T;
-}
+import { runInTerminal } from "../utils/terminal";
 
 type ConnectorType = "rdb" | "api";
 type RdbProvider = "mysql" | "postgres" | "sqlserver";
 
+interface ConnectorTypeQuickPickItem extends vscode.QuickPickItem {
+  type: ConnectorType;
+}
+
+interface RdbProviderQuickPickItem extends vscode.QuickPickItem {
+  provider: RdbProvider;
+}
+
 export function registerAddConnectorCommand(context: vscode.ExtensionContext): void {
-  const disposable = vscode.commands.registerCommand(
-    "swallowkit.addConnector",
-    async () => {
-      // 1. Enter connector name
-      const connectorName = await vscode.window.showInputBox({
-        prompt: "Enter connector name",
-        placeHolder: "mysql",
-        validateInput: (value) => {
-          if (!value || value.trim() === "") {
-            return "Connector name cannot be empty";
-          }
-          if (/[^a-zA-Z0-9-_]/.test(value.trim())) {
-            return "Connector name can only contain letters, numbers, hyphens, and underscores";
-          }
-          return undefined;
-        },
-      });
-      if (!connectorName) {
-        return;
-      }
-
-      // 2. Select connector type
-      const typePick = await vscode.window.showQuickPick<ValueQuickPickItem<ConnectorType>>(
-        [
-          {
-            label: "RDB（リレーショナルデータベース）",
-            description: "MySQL / PostgreSQL / SQL Server",
-            value: "rdb",
-          },
-          {
-            label: "API（REST API）",
-            description: "外部 REST API エンドポイント",
-            value: "api",
-          },
-        ],
-        { placeHolder: "コネクタの種類を選択" }
-      );
-      if (!typePick) {
-        return;
-      }
-
-      // 3. If RDB, select provider
-      let providerFlag = "";
-      if (typePick.value === "rdb") {
-        const providerPick = await vscode.window.showQuickPick<ValueQuickPickItem<RdbProvider>>(
-          [
-            { label: "MySQL", value: "mysql" },
-            { label: "PostgreSQL", value: "postgres" },
-            { label: "SQL Server", value: "sqlserver" },
-          ],
-          { placeHolder: "RDB プロバイダーを選択" }
-        );
-        if (!providerPick) {
-          return;
+  const disposable = vscode.commands.registerCommand("swallowkit.addConnector", async () => {
+    const name = await vscode.window.showInputBox({
+      prompt: vscode.l10n.t("Enter connector name"),
+      placeHolder: "e.g. mysql, backlog",
+      validateInput: (value) => {
+        if (!value || value.trim() === "") {
+          return vscode.l10n.t("Connector name cannot be empty");
         }
-        providerFlag = ` --provider ${providerPick.value}`;
-      }
-
-      const pm = detectPackageManager();
-      const prefix = getRunPrefix(pm);
-      const name = connectorName.trim();
-
-      runInTerminal(
-        "🐦 SwallowKit",
-        `${prefix} swallowkit add-connector ${name} --type ${typePick.value}${providerFlag}`
-      );
-
-      void vscode.window.showInformationMessage(
-        `コネクタ "${name}" を追加中です。完了後、swallowkit create-model <name> --connector=${name} でモデルを作成できます。`
-      );
+        if (/[^a-zA-Z0-9-_]/.test(value.trim())) {
+          return vscode.l10n.t("Connector name can only contain letters, numbers, hyphens, and underscores");
+        }
+        return undefined;
+      },
+    });
+    if (!name) {
+      return;
     }
-  );
+
+    const typePick = await vscode.window.showQuickPick<ConnectorTypeQuickPickItem>(
+      [
+        { label: "RDB", description: vscode.l10n.t("Relational database (MySQL / PostgreSQL / SQL Server)"), type: "rdb" },
+        { label: "API", description: vscode.l10n.t("External HTTP API"), type: "api" },
+      ],
+      { placeHolder: vscode.l10n.t("Select the connector type") }
+    );
+    if (!typePick) {
+      return;
+    }
+
+    let provider: RdbProvider | undefined;
+    if (typePick.type === "rdb") {
+      const providerPick = await vscode.window.showQuickPick<RdbProviderQuickPickItem>(
+        [
+          { label: "MySQL", provider: "mysql" },
+          { label: "PostgreSQL", provider: "postgres" },
+          { label: "SQL Server", provider: "sqlserver" },
+        ],
+        { placeHolder: vscode.l10n.t("Select the RDB provider") }
+      );
+      if (!providerPick) {
+        return;
+      }
+      provider = providerPick.provider;
+    }
+
+    const pm = detectPackageManager();
+    const prefix = getRunPrefix(pm);
+    let command = `${prefix} swallowkit add-connector ${name.trim()} --type ${typePick.type}`;
+    if (provider) {
+      command += ` --provider ${provider}`;
+    }
+
+    runInTerminal("🐦 SwallowKit", command);
+  });
 
   context.subscriptions.push(disposable);
 }

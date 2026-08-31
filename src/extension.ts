@@ -1,5 +1,4 @@
 import * as vscode from "vscode";
-import * as cp from "child_process";
 import { registerInitCommand } from "./commands/init";
 import { registerCreateModelCommand } from "./commands/createModel";
 import { registerCreateDevSeedsCommand } from "./commands/createDevSeeds";
@@ -7,11 +6,12 @@ import { registerScaffoldCommands } from "./commands/scaffold";
 import { registerDevCommands } from "./commands/dev";
 import { registerProvisionCommand } from "./commands/provision";
 import { registerOpenDocsCommand } from "./commands/openDocs";
-import { registerAddConnectorCommand } from "./commands/addConnector";
 import { registerAddAuthCommand } from "./commands/addAuth";
+import { registerAddConnectorCommand } from "./commands/addConnector";
+import { registerStatusCommand } from "./commands/status";
+import { registerVerifyCommand } from "./commands/verify";
 import { DevServerManager } from "./features/devServerManager";
 import { isSwallowKitProject } from "./features/projectDetector";
-import { detectPackageManager, getRunPrefix } from "./utils/packageManager";
 
 export async function activate(context: vscode.ExtensionContext): Promise<void> {
   // Initialize dev server manager (status bar)
@@ -26,9 +26,11 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     devServerManager.setRunning(running);
   });
   registerProvisionCommand(context);
-  registerAddConnectorCommand(context);
-  registerAddAuthCommand(context);
   registerOpenDocsCommand(context);
+  registerAddAuthCommand(context);
+  registerAddConnectorCommand(context);
+  registerStatusCommand(context);
+  registerVerifyCommand(context);
 
   // Show status bar if this is a SwallowKit project
   const detected = await isSwallowKitProject();
@@ -38,7 +40,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 
   // Also watch for config files appearing later
   const watcher = vscode.workspace.createFileSystemWatcher(
-    "**/{swallowkit.config.*,shared/models/*.ts,functions/host.json}"
+    "**/{swallowkit.config.*,shared/models/*.ts,functions/host.json,.swallowkit/*}"
   );
   watcher.onDidCreate(async () => {
     if (await isSwallowKitProject()) {
@@ -46,30 +48,6 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     }
   });
   context.subscriptions.push(watcher);
-
-  // Check if swallowkit CLI is available
-  checkCliAvailability();
-}
-
-function checkCliAvailability(): void {
-  const pm = detectPackageManager();
-  const prefix = getRunPrefix(pm);
-  const cmd = pm === "pnpm" ? "pnpm dlx swallowkit --version" : "npx --yes swallowkit --version";
-  cp.exec(cmd, { timeout: 15000 }, (error) => {
-    if (error) {
-      const installCmd = pm === "pnpm" ? "pnpm add -g swallowkit" : "npm install -g swallowkit";
-      vscode.window
-        .showWarningMessage(
-          `SwallowKit CLI が見つかりません。\`${installCmd}\` でグローバルインストールするか、${prefix} 経由で利用可能にしてください。`,
-          "Open Documentation"
-        )
-        .then((choice) => {
-          if (choice === "Open Documentation") {
-            vscode.commands.executeCommand("swallowkit.openDocs");
-          }
-        });
-    }
-  });
 }
 
 export function deactivate(): void {

@@ -6,7 +6,7 @@ import { detectPackageManager, getRunPrefix } from "../utils/packageManager";
 async function pickModelFile(): Promise<vscode.Uri | undefined> {
   const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
   if (!workspaceFolder) {
-    vscode.window.showErrorMessage("No workspace folder open.");
+    vscode.window.showErrorMessage(vscode.l10n.t("No workspace folder open."));
     return undefined;
   }
 
@@ -17,7 +17,7 @@ async function pickModelFile(): Promise<vscode.Uri | undefined> {
 
   if (modelFiles.length === 0) {
     vscode.window.showErrorMessage(
-      "No model files found in shared/models/ or lib/models/."
+      vscode.l10n.t("No model files found in shared/models/ or lib/models/.")
     );
     return undefined;
   }
@@ -29,17 +29,23 @@ async function pickModelFile(): Promise<vscode.Uri | undefined> {
   }));
 
   const selected = await vscode.window.showQuickPick(items, {
-    placeHolder: "Select a model file to scaffold",
+    placeHolder: vscode.l10n.t("Select a model file to scaffold"),
   });
 
   return selected?.uri;
 }
 
-function runScaffold(fileUri: vscode.Uri, apiOnly: boolean): void {
+function runScaffold(fileUri: vscode.Uri, options: { apiOnly?: boolean; dryRun?: boolean } = {}): void {
   const pm = detectPackageManager();
   const prefix = getRunPrefix(pm);
   const filePath = vscode.workspace.asRelativePath(fileUri);
-  const flags = apiOnly ? " --api-only" : "";
+  let flags = "";
+  if (options.apiOnly) {
+    flags += " --api-only";
+  }
+  if (options.dryRun) {
+    flags += " --dry-run";
+  }
   runInTerminal("🐦 SwallowKit", `${prefix} swallowkit scaffold ${filePath}${flags}`);
 }
 
@@ -51,7 +57,7 @@ export function registerScaffoldCommands(context: vscode.ExtensionContext): void
       if (!uri) {
         return;
       }
-      runScaffold(uri, false);
+      runScaffold(uri);
     }
   );
 
@@ -62,9 +68,20 @@ export function registerScaffoldCommands(context: vscode.ExtensionContext): void
       if (!uri) {
         return;
       }
-      runScaffold(uri, true);
+      runScaffold(uri, { apiOnly: true });
     }
   );
 
-  context.subscriptions.push(scaffoldDisposable, scaffoldApiOnlyDisposable);
+  const scaffoldDryRunDisposable = vscode.commands.registerCommand(
+    "swallowkit.scaffoldDryRun",
+    async (fileUri?: vscode.Uri) => {
+      const uri = fileUri ?? (await pickModelFile());
+      if (!uri) {
+        return;
+      }
+      runScaffold(uri, { dryRun: true });
+    }
+  );
+
+  context.subscriptions.push(scaffoldDisposable, scaffoldApiOnlyDisposable, scaffoldDryRunDisposable);
 }

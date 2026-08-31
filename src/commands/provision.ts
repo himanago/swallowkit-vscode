@@ -7,11 +7,11 @@ export function registerProvisionCommand(context: vscode.ExtensionContext): void
     "swallowkit.provision",
     async () => {
       const resourceGroup = await vscode.window.showInputBox({
-        prompt: "Enter resource group name",
+        prompt: vscode.l10n.t("Enter resource group name"),
         placeHolder: "my-resource-group",
         validateInput: (value) => {
           if (!value || value.trim() === "") {
-            return "Resource group name cannot be empty";
+            return vscode.l10n.t("Resource group name cannot be empty");
           }
           return undefined;
         },
@@ -22,7 +22,7 @@ export function registerProvisionCommand(context: vscode.ExtensionContext): void
       }
 
       const subscription = await vscode.window.showInputBox({
-        prompt: "Enter subscription ID if you want to switch subscriptions before provisioning (optional)",
+        prompt: vscode.l10n.t("Enter subscription ID if you want to switch subscriptions before provisioning (optional)"),
         placeHolder: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
       });
 
@@ -35,7 +35,7 @@ export function registerProvisionCommand(context: vscode.ExtensionContext): void
 
       runInTerminal("🐦 SwallowKit", command);
       void vscode.window.showInformationMessage(
-        "SwallowKit CLI will ask for the primary Azure location, the Static Web App location, and a final confirmation in the terminal.",
+        vscode.l10n.t("SwallowKit CLI will ask for the primary Azure location, the Static Web App location, and a final confirmation in the terminal."),
       );
     }
   );

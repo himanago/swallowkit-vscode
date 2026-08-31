@@ -2,6 +2,24 @@
 
 All notable changes to the SwallowKit VS Code Extension will be documented in this file.
 
+## [0.4.0] - 2026-09-01
+
+### Added
+- **Localization (i18n)**: All UI strings now default to English and are localized via VS Code's l10n mechanism when the display language matches. Supported languages: Japanese, Simplified Chinese, Korean, French, German, Spanish, Brazilian Portuguese
+- **Show Project Status command**: Runs `swallowkit status` with an optional `--artifacts` listing
+- **Verify Project command**: Runs `swallowkit verify` with selectable checks (structure / drift / typecheck)
+- **Scaffold Preview (Dry Run)**: New command and context menu entry running `swallowkit scaffold --dry-run` to preview changes and conflicts without writing files
+- **Dev seeds from emulator**: `Create Dev Seed Templates` can now export current Cosmos DB Emulator data via `--from-emulator`
+- **Auth policy snippet**: `skauthpolicy` for role-based access control declarations
+- **Project detection via `.swallowkit/`**: The extension now also activates on the SwallowKit project metadata directory
+
+### Changed
+- **Init wizard aligned with latest CLI (1.0.0-beta.59)**: Added the required Static Web Apps plan step (Free / Standard) and pass `--swa-plan`; the latest CLI requires all flags in non-interactive mode
+- **Add Authentication expanded**: Now supports the External Token provider, named schemes (`--scheme`), and SWA identity providers (`--allowed-providers`)
+
+### Removed
+- **Global install suggestion**: The startup CLI availability check no longer exists; SwallowKit is intended to be run on demand via `npx` / `pnpm dlx` without installation
+
 ## [0.3.0] - 2026-03-31
 
 ### Added

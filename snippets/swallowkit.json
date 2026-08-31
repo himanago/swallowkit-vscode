@@ -69,6 +69,15 @@
     ],
     "description": "SwallowKit custom Cosmos DB partition key export"
   },
+  "SwallowKit Auth Policy": {
+    "prefix": "skauthpolicy",
+    "body": [
+      "",
+      "// Role-based access control on generated CRUD",
+      "export const authPolicy = { read: ['${1:user}'], write: ['${2:admin}'] };"
+    ],
+    "description": "SwallowKit role-based access control on generated CRUD"
+  },
   "SwallowKit RDB Connector Config": {
     "prefix": "skconnector-rdb",
     "body": [

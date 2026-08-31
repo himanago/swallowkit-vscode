@@ -14,21 +14,24 @@ Access all SwallowKit commands via `Ctrl+Shift+P`:
 
 | Command | Description |
 |---|---|
-| `SwallowKit: Initialize New Project` | Guided wizard: folder → project name → CI/CD → backend language → Cosmos DB mode → VNet, then opens the project |
-| `SwallowKit: Create Model` | Prompts for model name(s), optionally associates with a connector, runs `swallowkit create-model`, auto-opens new files |
-| `SwallowKit: Create Dev Seed Templates` | Prompts for an environment name and runs `swallowkit create-dev-seeds <environment>` |
+| `SwallowKit: Initialize New Project` | Guided wizard: folder → project name → CI/CD → backend language → Cosmos DB mode → VNet → Static Web Apps plan, then opens the project |
+| `SwallowKit: Create Model` | Prompts for model name(s), runs `swallowkit create-model`, auto-opens new files |
+| `SwallowKit: Create Dev Seed Templates` | Generates seed templates from models, or exports current emulator data with `--from-emulator` |
 | `SwallowKit: Scaffold CRUD from Model` | Pick model file → runs `swallowkit scaffold <path>` |
 | `SwallowKit: Scaffold CRUD (API Only)` | Same as above with `--api-only` flag |
-| `SwallowKit: Add Connector` | Wizard: connector name → type (RDB/API) → provider, runs `swallowkit add-connector` |
-| `SwallowKit: Add Authentication` | Select auth provider (Custom JWT / SWA / SWA+Custom / None), runs `swallowkit add-auth` |
-| `SwallowKit: Start Dev Server` | Starts `swallowkit dev` in a dedicated terminal, offers `--seed-env` and `--mock-connectors` options |
+| `SwallowKit: Scaffold Preview (Dry Run)` | Shows planned file changes and conflicts without writing anything (`--dry-run`) |
+| `SwallowKit: Start Dev Server` | Starts `swallowkit dev` in a dedicated terminal; offers `--seed-env` when `dev-seeds/*` exists and `--mock-connectors` when connectors are configured |
 | `SwallowKit: Stop Dev Server` | Stops the dev server terminal |
+| `SwallowKit: Add Authentication` | Guided `swallowkit add-auth`: provider (Custom JWT / SWA / External Token / SWA + Custom / None), optional scheme and SWA identity providers |
+| `SwallowKit: Add External Connector` | Guided `swallowkit add-connector`: name → type (RDB / API) → RDB provider (MySQL / PostgreSQL / SQL Server) |
+| `SwallowKit: Show Project Status` | Runs `swallowkit status` (optionally with `--artifacts`) to show generated artifact status and drift |
+| `SwallowKit: Verify Project` | Runs `swallowkit verify` with selectable checks (structure / drift / typecheck) |
 | `SwallowKit: Provision Azure Resources` | Collects Azure settings, then lets the CLI guide region selection in the terminal |
 | `SwallowKit: Open Documentation` | Opens https://himanago.github.io/swallowkit/ in browser |
 
 ### 🖱️ Context Menu Integration
 
-- **Explorer**: Right-click on `shared/models/*.ts` or `lib/models/*.ts` files → Scaffold CRUD
+- **Explorer**: Right-click on `shared/models/*.ts` or `lib/models/*.ts` files → Scaffold CRUD / API Only / Dry Run
 - **Explorer**: Right-click on `shared/models/` or `lib/models/` folder → Create Model
 - **Editor**: Right-click when editing a model file → Scaffold CRUD
 
@@ -48,15 +51,20 @@ Access all SwallowKit commands via `Ctrl+Shift+P`:
 | `skfield-enum` | Enum field |
 | `skfield-array` | Array field |
 | `sknested` | Nested schema reference |
-| `skpartitionkey` | Custom Cosmos DB partition key |
-| `skconnector-rdb` | RDB connector config (MySQL, PostgreSQL, SQL Server) |
+| `skpartitionkey` | Cosmos DB partition key declaration |
+| `skauthpolicy` | Role-based access control declaration |
+| `skconnector-rdb` | RDB connector config (MySQL / PostgreSQL / SQL Server) |
 | `skconnector-api` | REST API connector config |
 
 ## Requirements
 
 - **Node.js** 22.x
-- **SwallowKit CLI**: Available via `npx swallowkit` (or install globally: `npm install -g swallowkit`)
+- **SwallowKit CLI**: No installation needed — the extension runs it on demand via `npx swallowkit` (recommended usage)
 - **pnpm** (recommended): If installed, the extension automatically uses `pnpm dlx` for faster execution. Falls back to `npx` when pnpm is not available.
+
+## Localization
+
+The UI is in English by default and follows the VS Code display language when available: 日本語, 简体中文, 한국어, Français, Deutsch, Español, Português (Brasil).
 
 ## Usage
 
@@ -69,8 +77,9 @@ Access all SwallowKit commands via `Ctrl+Shift+P`:
 5. Choose backend language (TypeScript / C# / Python)
 6. Choose Cosmos DB mode (Free Tier / Serverless)
 7. Choose network security (VNet Integration / None)
-8. Wait for initialization to complete (progress shown in notification)
-9. Choose to open the project in the current or a new window
+8. Choose Static Web Apps plan (Free / Standard)
+9. Wait for initialization to complete (progress shown in notification)
+10. Choose to open the project in the current or a new window
 
 ### Create a Model
 
@@ -92,13 +101,15 @@ Click the `○ SwallowKit` item in the status bar to start/stop the dev server.
 The terminal `🐦 SwallowKit Dev` will be created automatically.
 
 If your project already has `dev-seeds/<environment>/` folders, the extension will offer them before startup and run `swallowkit dev --seed-env <environment>`.
+When `swallowkit.config` declares connectors, the extension also offers to start the mock connector server (`--mock-connectors`).
 
 ### Dev Seeds Workflow
 
 1. Run `SwallowKit: Create Dev Seed Templates`
-2. Enter an environment name such as `local`
-3. Edit the generated JSON files under `dev-seeds/<environment>/`
-4. Run `SwallowKit: Start Dev Server` and choose that environment to seed the Cosmos DB Emulator before startup
+2. Choose whether to generate templates from models or export current data from the Cosmos DB Emulator (`--from-emulator`)
+3. Enter an environment name such as `local`
+4. Edit the generated JSON files under `dev-seeds/<environment>/`
+5. Run `SwallowKit: Start Dev Server` and choose that environment to seed the Cosmos DB Emulator before startup
 
 Notes:
 
@@ -106,25 +117,6 @@ Notes:
 - Each JSON file can contain a single object or an array of objects
 - Every seed document must include a non-empty string `id`
 - If `--seed-env` is omitted, or the selected environment does not exist, current emulator data is preserved
-
-### Add External Connectors
-
-1. Run `SwallowKit: Add Connector` from the command palette
-2. Enter a connector name (e.g. `mysql`)
-3. Select the connector type (RDB or API)
-4. If RDB, select the provider (MySQL / PostgreSQL / SQL Server)
-5. The connector is registered in `swallowkit.config.js`
-6. Create connector-aware models with `SwallowKit: Create Model` — the extension will offer to associate the model with a connector
-
-### Add Authentication
-
-1. Run `SwallowKit: Add Authentication` from the command palette
-2. Select the auth provider (Custom JWT / Static Web Apps / SWA + Custom / None)
-3. The authentication framework is added to the project
-
-### Dev Server with Mock Connectors
-
-When connectors are defined in `swallowkit.config.js`, the `Start Dev Server` command will ask whether to use mock data (`--mock-connectors`) so you can develop locally without connecting to real external data sources.
 
 ### Provision Azure Resources
 
@@ -134,6 +126,24 @@ When connectors are defined in `swallowkit.config.js`, the `Start Dev Server` co
 4. The provision command starts in the terminal
 5. Follow the CLI prompts to choose the primary Azure location and the Static Web App location
 6. Confirm the deployment in the terminal
+
+### Add Authentication
+
+1. Run `SwallowKit: Add Authentication`
+2. Choose an auth provider (Custom JWT / Static Web Apps / External Token / SWA + Custom / None)
+3. Optionally enter a named scheme, and for SWA-based providers the allowed identity providers
+4. `swallowkit add-auth` runs in the terminal
+
+### Add an External Connector
+
+1. Run `SwallowKit: Add External Connector`
+2. Enter a connector name, choose its type (RDB / API), and for RDB a provider
+3. `swallowkit add-connector` runs in the terminal; then create connector-aware models with `create-model --connector <name>`
+
+### Check Project Health
+
+- `SwallowKit: Show Project Status` — shows generated artifact status and drift (`swallowkit status`)
+- `SwallowKit: Verify Project` — runs structure / drift / typecheck verification (`swallowkit verify`)
 
 ## Extension Settings
 

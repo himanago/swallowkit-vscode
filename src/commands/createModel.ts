@@ -9,11 +9,11 @@ export function registerCreateModelCommand(context: vscode.ExtensionContext): vo
     "swallowkit.createModel",
     async (folderUri?: vscode.Uri) => {
       const input = await vscode.window.showInputBox({
-        prompt: "Enter model name(s) (comma-separated for multiple)",
+        prompt: vscode.l10n.t("Enter model name(s) (comma-separated for multiple)"),
         placeHolder: "User, Product, Order",
         validateInput: (value) => {
           if (!value || value.trim() === "") {
-            return "Model name cannot be empty";
+            return vscode.l10n.t("Model name cannot be empty");
           }
           return undefined;
         },
@@ -42,7 +42,7 @@ export function registerCreateModelCommand(context: vscode.ExtensionContext): vo
         workspaceRoot = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
       }
       if (!workspaceRoot) {
-        vscode.window.showErrorMessage("No workspace folder open.");
+        vscode.window.showErrorMessage(vscode.l10n.t("No workspace folder open."));
         return;
       }
 
@@ -52,14 +52,14 @@ export function registerCreateModelCommand(context: vscode.ExtensionContext): vo
       if (connectorNames.length > 0) {
         const connectorPick = await vscode.window.showQuickPick(
           [
-            { label: "Cosmos DB（デフォルト）", description: "コネクタなし", connectorName: "" },
+            { label: vscode.l10n.t("Cosmos DB (default)"), description: vscode.l10n.t("No connector"), connectorName: "" },
             ...connectorNames.map((name) => ({
               label: name,
-              description: `コネクタ "${name}" に関連付ける`,
+              description: vscode.l10n.t('Associate with connector "{0}"', name),
               connectorName: name,
             })),
           ],
-          { placeHolder: "データソースを選択（コネクタが定義されています）" }
+          { placeHolder: vscode.l10n.t("Select a data source (connectors are defined)") }
         );
         if (!connectorPick) {
           return;

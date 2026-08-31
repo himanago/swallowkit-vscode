@@ -2,7 +2,7 @@
   "name": "swallowkit-vscode",
   "displayName": "SwallowKit",
   "description": "VS Code extension for SwallowKit - Next.js + Azure Functions + Cosmos DB toolkit with Zod schema sharing",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "publisher": "himanago",
   "engines": {
     "vscode": "^1.85.0"
@@ -31,60 +31,74 @@
   },
   "license": "MIT",
   "main": "./dist/extension.js",
+  "l10n": "./l10n",
   "activationEvents": [
     "workspaceContains:**/shared/models/*.ts",
     "workspaceContains:**/swallowkit.config.*",
-    "workspaceContains:**/functions/host.json"
+    "workspaceContains:**/functions/host.json",
+    "workspaceContains:**/.swallowkit/*"
   ],
   "contributes": {
     "commands": [
       {
         "command": "swallowkit.init",
-        "title": "SwallowKit: Initialize New Project"
+        "title": "%swallowkit.init.title%"
       },
       {
         "command": "swallowkit.createModel",
-        "title": "SwallowKit: Create Model"
+        "title": "%swallowkit.createModel.title%"
       },
       {
         "command": "swallowkit.createDevSeeds",
-        "title": "SwallowKit: Create Dev Seed Templates"
+        "title": "%swallowkit.createDevSeeds.title%"
       },
       {
         "command": "swallowkit.scaffold",
-        "title": "SwallowKit: Scaffold CRUD from Model"
+        "title": "%swallowkit.scaffold.title%"
       },
       {
         "command": "swallowkit.scaffoldApiOnly",
-        "title": "SwallowKit: Scaffold CRUD (API Only)"
+        "title": "%swallowkit.scaffoldApiOnly.title%"
+      },
+      {
+        "command": "swallowkit.scaffoldDryRun",
+        "title": "%swallowkit.scaffoldDryRun.title%"
       },
       {
         "command": "swallowkit.startDev",
-        "title": "SwallowKit: Start Dev Server"
+        "title": "%swallowkit.startDev.title%"
       },
       {
         "command": "swallowkit.stopDev",
-        "title": "SwallowKit: Stop Dev Server"
+        "title": "%swallowkit.stopDev.title%"
       },
       {
         "command": "swallowkit.provision",
-        "title": "SwallowKit: Provision Azure Resources"
-      },
-      {
-        "command": "swallowkit.addConnector",
-        "title": "SwallowKit: Add Connector"
+        "title": "%swallowkit.provision.title%"
       },
       {
         "command": "swallowkit.addAuth",
-        "title": "SwallowKit: Add Authentication"
+        "title": "%swallowkit.addAuth.title%"
+      },
+      {
+        "command": "swallowkit.addConnector",
+        "title": "%swallowkit.addConnector.title%"
+      },
+      {
+        "command": "swallowkit.status",
+        "title": "%swallowkit.status.title%"
+      },
+      {
+        "command": "swallowkit.verify",
+        "title": "%swallowkit.verify.title%"
       },
       {
         "command": "swallowkit.openDocs",
-        "title": "SwallowKit: Open Documentation"
+        "title": "%swallowkit.openDocs.title%"
       },
       {
         "command": "swallowkit.toggleDev",
-        "title": "SwallowKit: Toggle Dev Server"
+        "title": "%swallowkit.toggleDev.title%"
       }
     ],
     "menus": {
@@ -104,6 +118,11 @@
           "command": "swallowkit.scaffoldApiOnly",
           "when": "resourcePath =~ /(?:shared|lib)[/\\\\]models[/\\\\].*\\.ts$/",
           "group": "swallowkit@2"
+        },
+        {
+          "command": "swallowkit.scaffoldDryRun",
+          "when": "resourcePath =~ /(?:shared|lib)[/\\\\]models[/\\\\].*\\.ts$/",
+          "group": "swallowkit@3"
         },
         {
           "command": "swallowkit.createModel",

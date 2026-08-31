@@ -1,0 +1,17 @@
+{
+  "swallowkit.init.title": "SwallowKit: 初始化新项目",
+  "swallowkit.createModel.title": "SwallowKit: 创建模型",
+  "swallowkit.createDevSeeds.title": "SwallowKit: 创建开发种子模板",
+  "swallowkit.scaffold.title": "SwallowKit: 从模型生成 CRUD 脚手架",
+  "swallowkit.scaffoldApiOnly.title": "SwallowKit: 生成 CRUD 脚手架（仅 API）",
+  "swallowkit.scaffoldDryRun.title": "SwallowKit: 预览脚手架（Dry Run）",
+  "swallowkit.startDev.title": "SwallowKit: 启动开发服务器",
+  "swallowkit.stopDev.title": "SwallowKit: 停止开发服务器",
+  "swallowkit.provision.title": "SwallowKit: 预配 Azure 资源",
+  "swallowkit.addAuth.title": "SwallowKit: 添加身份验证",
+  "swallowkit.addConnector.title": "SwallowKit: 添加外部连接器",
+  "swallowkit.status.title": "SwallowKit: 显示项目状态",
+  "swallowkit.verify.title": "SwallowKit: 验证项目",
+  "swallowkit.openDocs.title": "SwallowKit: 打开文档",
+  "swallowkit.toggleDev.title": "SwallowKit: 切换开发服务器"
+}

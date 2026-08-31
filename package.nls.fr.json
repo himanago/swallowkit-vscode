@@ -1,0 +1,17 @@
+{
+  "swallowkit.init.title": "SwallowKit : Initialiser un nouveau projet",
+  "swallowkit.createModel.title": "SwallowKit : Créer un modèle",
+  "swallowkit.createDevSeeds.title": "SwallowKit : Créer des modèles de seeds de développement",
+  "swallowkit.scaffold.title": "SwallowKit : Générer le CRUD à partir du modèle",
+  "swallowkit.scaffoldApiOnly.title": "SwallowKit : Générer le CRUD (API uniquement)",
+  "swallowkit.scaffoldDryRun.title": "SwallowKit : Aperçu du scaffold (Dry Run)",
+  "swallowkit.startDev.title": "SwallowKit : Démarrer le serveur de développement",
+  "swallowkit.stopDev.title": "SwallowKit : Arrêter le serveur de développement",
+  "swallowkit.provision.title": "SwallowKit : Provisionner les ressources Azure",
+  "swallowkit.addAuth.title": "SwallowKit : Ajouter l'authentification",
+  "swallowkit.addConnector.title": "SwallowKit : Ajouter un connecteur externe",
+  "swallowkit.status.title": "SwallowKit : Afficher l'état du projet",
+  "swallowkit.verify.title": "SwallowKit : Vérifier le projet",
+  "swallowkit.openDocs.title": "SwallowKit : Ouvrir la documentation",
+  "swallowkit.toggleDev.title": "SwallowKit : Basculer le serveur de développement"
+}

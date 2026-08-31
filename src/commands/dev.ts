@@ -29,22 +29,22 @@ async function promptForSeedEnvironment(): Promise<string | undefined | null> {
   const selection = await vscode.window.showQuickPick<SeedEnvironmentQuickPickItem>(
     [
       {
-        label: "Start without seed data",
-        description: "Run swallowkit dev without --seed-env",
+        label: vscode.l10n.t("Start without seed data"),
+        description: vscode.l10n.t("Run swallowkit dev without --seed-env"),
       },
       ...environments.map((environment) => ({
         label: environment,
-        description: `Apply dev-seeds/${environment} before startup`,
+        description: vscode.l10n.t("Apply dev-seeds/{0} before startup", environment),
         environment,
       })),
       {
-        label: "Enter environment name...",
-        description: "Use a custom seed environment manually",
+        label: vscode.l10n.t("Enter environment name..."),
+        description: vscode.l10n.t("Use a custom seed environment manually"),
         manualEntry: true,
       },
     ],
     {
-      placeHolder: "Choose a dev seed environment (optional)",
+      placeHolder: vscode.l10n.t("Choose a dev seed environment (optional)"),
     }
   );
 
@@ -54,7 +54,7 @@ async function promptForSeedEnvironment(): Promise<string | undefined | null> {
 
   if (selection.manualEntry) {
     const input = await vscode.window.showInputBox({
-      prompt: "Enter dev seed environment name",
+      prompt: vscode.l10n.t("Enter dev seed environment name"),
       placeHolder: environments[0],
       validateInput: validateDevSeedEnvironmentName,
     });
@@ -80,22 +80,21 @@ async function promptForMockConnectors(): Promise<boolean | null> {
     return false;
   }
 
+  const namesLabel = connectorNames.join(", ");
   const selection = await vscode.window.showQuickPick(
     [
       {
-        label: "実際のコネクタに接続",
-        description: "外部データソースに直接接続",
+        label: vscode.l10n.t("Do not use mock connectors"),
+        description: vscode.l10n.t("Connect to the real external data sources"),
         mock: false,
       },
       {
-        label: "モックデータを使用（推奨）",
-        description: `${connectorNames.join(", ")} をモックサーバーで代替`,
+        label: vscode.l10n.t("Start mock connectors (--mock-connectors)"),
+        description: vscode.l10n.t("Serve {0} from a mock server instead", namesLabel),
         mock: true,
       },
     ],
-    {
-      placeHolder: `コネクタ (${connectorNames.join(", ")}) の動作モードを選択`,
-    }
+    { placeHolder: vscode.l10n.t("Choose how connectors ({0}) run", namesLabel) }
   );
 
   if (!selection) {
@@ -124,7 +123,7 @@ export function registerDevCommands(
       if (existing && devRunning) {
         existing.show();
         vscode.window.showInformationMessage(
-          "SwallowKit dev server is already running."
+          vscode.l10n.t("SwallowKit dev server is already running.")
         );
         return;
       }
@@ -149,7 +148,7 @@ export function registerDevCommands(
         command += ` --seed-env ${seedEnvironment}`;
       }
       if (mockConnectors) {
-        command += ` --mock-connectors`;
+        command += " --mock-connectors";
       }
 
       terminal.sendText(command);
